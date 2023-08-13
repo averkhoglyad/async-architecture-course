@@ -11,7 +11,7 @@
 
     <modules>
         <module>auth</module>
-<!--        <module>task-tracker</module>-->
+        <module>task-tracker</module>
 <!--        <module>common</module>-->
 <!--        <module>config-server</module>-->
 <!--        <module>discovery-server</module>-->
