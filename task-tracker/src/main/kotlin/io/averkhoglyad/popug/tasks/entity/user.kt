@@ -10,11 +10,12 @@ class User {
     var id: UUID? = null
     var login: String = ""
     var name: String = ""
+
     @Enumerated(EnumType.STRING)
-    var role: Role = Role.NONE
+    var role: UserRole = UserRole.NONE
 }
 
-enum class Role {
+enum class UserRole {
     ADMIN,
     MANAGER,
     USER,

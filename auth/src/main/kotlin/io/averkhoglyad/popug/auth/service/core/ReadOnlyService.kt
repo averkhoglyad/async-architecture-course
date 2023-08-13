@@ -9,6 +9,7 @@ interface ReadOnlyService<E, I : Serializable> {
 
     fun findAll(): List<E>
     fun findList(pageable: Pageable): Page<E>
+
     @Throws(EntityNotFoundException::class)
     fun findEntity(id: I): E
 

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.HttpMediaTypeNotSupportedException
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MissingServletRequestParameterException
@@ -19,6 +20,12 @@ import kotlin.reflect.full.findAnnotation
 class ExceptionHandler {
 
     private val logger by log4j()
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun handleException(e: AccessDeniedException): ExceptionResponse {
+        return ExceptionResponse("access.denied")
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -69,8 +76,10 @@ class ExceptionHandler {
         return createErrorResponseEntity(e, responseStatus)
     }
 
-    private fun createErrorResponseEntity(exception: Exception,
-                                          responseStatus: ResponseStatus?): ResponseEntity<ExceptionResponse> {
+    private fun createErrorResponseEntity(
+        exception: Exception,
+        responseStatus: ResponseStatus?
+    ): ResponseEntity<ExceptionResponse> {
         if (responseStatus == null) {
             return ResponseEntity(
                 ExceptionResponse(exception.message ?: "internal.server.error"),

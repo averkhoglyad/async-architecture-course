@@ -16,7 +16,7 @@ class DbAwareUserDetailsService(private val repo: UserRepository) : UserDetailsS
         val user = repo.findByLogin(username)
             .orElseThrow { UsernameNotFoundException("Username $username not found") }
         return User.builder()
-            .username(user.login)
+            .username(user.id.toString())
             .roles(user.role.toString())
             .password(user.passwordHash)
             .build()

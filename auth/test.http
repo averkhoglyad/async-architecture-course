@@ -19,7 +19,7 @@ GET http://localhost:9000/oauth2/authorize?response_type=code&client_id=test-cli
         client.log('Already have code');
         client.exit();
     }
- %}
+%}
 POST http://localhost:9000/login
 Content-Type: application/x-www-form-urlencoded
 
@@ -80,7 +80,7 @@ Authorization: Basic dGVzdC1jbGllbnQ6dGVzdC1jbGllbnQ=
         client.assert(response.status == 200, "Response status must be 200");
         client.assert(!!response.body['active'], "Token must be active");
     });
- %}
+%}
 
 ### Get Users page
 GET http://localhost:9000/api/users?page=1&size=5
@@ -96,8 +96,8 @@ POST http://localhost:9000/api/users
 Content-Type: application/json
 
 {
-  "name": "User",
-  "login": "user",
+  "name": "User {{  $random.alphabetic(5) }}",
+  "login": "user {{  $random.alphabetic(5) }}",
   "password": "pass",
   "role": "USER"
 }
@@ -117,8 +117,8 @@ Content-Type: application/json
     client.test("Success", () => {
         client.assert(response.status == 200, "Response status must be 200");
         client.assert(response.body['id'] == client.global.get('userId'), "Wrong User ID");
-        client.assert(response.body['name'] == 'User', "Wrong User name");
-        client.assert(response.body['login'] == 'user', "Wrong User login");
+        client.assert(response.body['name'].startsWith('User '), "Wrong User name");
+        client.assert(response.body['login'].startsWith('user '), "Wrong User login");
     });
 %}
 
@@ -127,8 +127,8 @@ PUT http://localhost:9000/api/users/{{ userId }}
 Content-Type: application/json
 
 {
-  "name": "User 2",
-  "login": "user 2",
+  "name": "User {{  $random.alphabetic(6) }}",
+  "login": "user {{  $random.alphabetic(6) }}",
   "role": "MANAGER"
 }
 
@@ -136,8 +136,8 @@ Content-Type: application/json
     client.test("Success", () => {
         client.assert(response.status == 200, "Response status must be 200");
         client.assert(response.body['id'] == client.global.get('userId'), "Wrong User ID");
-        client.assert(response.body['name'] == 'User 2', "Wrong User name");
-        client.assert(response.body['login'] == 'user 2', "Wrong User login");
+        client.assert(response.body['name'].startsWith('User '), "Wrong User name");
+        client.assert(response.body['login'].startsWith('user '), "Wrong User login");
     });
 %}
 

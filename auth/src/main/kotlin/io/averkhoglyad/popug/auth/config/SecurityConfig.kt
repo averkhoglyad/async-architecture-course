@@ -1,8 +1,8 @@
 package io.averkhoglyad.popug.auth.config
 
-import com.nimbusds.jose.jwk.JWKSelector
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
+import io.averkhoglyad.popug.auth.entity.UserEntity
 import io.averkhoglyad.popug.auth.util.generateRsa
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -12,8 +12,6 @@ import org.springframework.security.config.Customizer.withDefaults
 import org.springframework.security.config.annotation.SecurityConfigurer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtDecoder
@@ -22,7 +20,6 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
@@ -84,14 +81,15 @@ class SecurityConfig {
     @Bean
     fun jwtCustomizer(): OAuth2TokenCustomizer<JwtEncodingContext> {
         return OAuth2TokenCustomizer<JwtEncodingContext> { context: JwtEncodingContext ->
-            if (context.tokenType == OAuth2TokenType.ACCESS_TOKEN) {
-                val principal: Authentication = context.getPrincipal()
-                val authorities: Set<String> = principal.authorities
-                    .stream()
-                    .map { it.authority.removePrefix("ROLE_") }
-                    .collect(Collectors.toSet())
-                context.claims.claim("roles", authorities)
+            if (context.tokenType != OAuth2TokenType.ACCESS_TOKEN) {
+                return@OAuth2TokenCustomizer
             }
+            val principal: Authentication = context.getPrincipal()
+            val authorities: Set<String> = principal.authorities
+                .asSequence()
+                .map { it.authority.removePrefix("ROLE_") }
+                .toSet()
+            context.claims.claim("roles", authorities)
         }
     }
 

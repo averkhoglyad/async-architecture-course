@@ -1,0 +1,204 @@
+### Logout
+//@no-redirect
+< {%
+    client.global.clearAll();
+%}
+GET http://localhost:9000/logout
+
+### Request oAuth2 login
+//@no-redirect
+GET http://localhost:9000/oauth2/authorize?response_type=code&client_id=test-client
+
+> {%
+    let segments = response.headers.valueOf('Location').split('?');
+    if (segments.length == 2 && segments[1].startsWith('code=')) {
+        client.global.set('authCode', segments[1].replace('code=', ''));
+    }
+%}
+
+### Authenticate
+//@no-redirect
+POST http://localhost:9000/login
+Content-Type: application/x-www-form-urlencoded
+
+username=user&password=0000
+
+### Authorize
+//@no-redirect
+GET http://localhost:9000/oauth2/authorize?response_type=code&client_id=test-client&continue
+
+> {%
+    if (response.status === 302) {
+        client.global.set('authCode', response.headers.valueOf('Location').split('?')[1].replace('code=', ''));
+    } else {
+        client.global.clear('authCode');
+    }
+%}
+
+### Change code to tokens
+POST http://localhost:9000/oauth2/token?grant_type=authorization_code&code={{ authCode }}
+Authorization: Basic dGVzdC1jbGllbnQ6dGVzdC1jbGllbnQ=
+
+> {%
+    if (response.status === 200) {
+        client.global.set('accessToken', response.body['access_token']);
+        client.global.set('refreshToken', response.body['refresh_token']);
+    } else {
+        client.global.clear('accessToken');
+        client.global.clear('refreshToken');
+    }
+%}
+
+### Can't get Tasks if unauthorized
+GET http://localhost:3000/tasks?page=1&size=5
+
+> {%
+    client.test("Failed", () => {
+        client.assert(response.status == 401, "Response status must be 401");
+    });
+%}
+
+### Get Tasks
+GET http://localhost:3000/tasks?page=1&size=5
+Authorization: Bearer {{ accessToken }}
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 200, "Response status must be 200");
+    });
+%}
+
+### Create Task
+POST http://localhost:3000/tasks
+Authorization: Bearer {{ accessToken }}
+Content-Type: application/json
+
+{
+  "title": "Test Task {{ $random.alphanumeric(8) }}",
+  "description": "Some text  {{ $random.alphanumeric(10) }}  {{ $random.alphanumeric(15) }}  {{ $random.alphanumeric(20) }}"
+}
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 201, "Response status must be 201");
+    });
+    client.test("Status is correct", () => {
+        client.assert(response.body['status'] == 'OPEN', "Task must be open");
+    });
+    client.test("Accounting fields are correct", () => {
+        client.assert(response.body['userCost'] >= 10 && response.body['userCost'] <= 20, "Task's user cost must be between 10 and 20");
+        client.assert(response.body['userRevenue'] >= 20 && response.body['userRevenue'] <= 40, "Task's user revenue must be between 20 and 40");
+    });
+    client.test("Assignee is correct", () => {
+        client.assert(!!response.body['assignee'], "Task must be assigned to a User");
+        client.assert(response.body['assignee']['role'] == 'USER', "Task's assignee must be User with role USER");
+    });
+
+    if (response.status < 400) {
+        client.global.set('taskId', response.body['id']);
+    } else {
+        client.global.clear('taskId');
+    }
+%}
+
+### Get Task
+GET http://localhost:3000/tasks/{{ taskId }}
+Authorization: Bearer {{ accessToken }}
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 200, "Response status must be 200");
+    });
+    client.test("Task fields are correct", () => {
+        client.assert(response.body['id'] == client.global.get('taskId'), "Invalid ID");
+    });
+%}
+
+### Close Task
+PUT http://localhost:3000/tasks/{{ taskId }}?close
+Authorization: Bearer {{ accessToken }}
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 200, "Response status must be 200");
+    });
+    client.test("Task fields are correct", () => {
+        client.assert(response.body['id'] == client.global.get('taskId'), "Invalid ID");
+        client.assert(response.body['status'] == 'CLOSED', "Invalid status");
+    });
+%}
+
+### Get closed Task
+GET http://localhost:3000/tasks/{{ taskId }}
+Authorization: Bearer {{ accessToken }}
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 200, "Response status must be 200");
+    });
+    client.test("Task fields are correct", () => {
+        client.assert(response.body['id'] == client.global.get('taskId'), "Invalid ID");
+        client.assert(response.body['status'] == 'CLOSED', "Invalid status");
+    });
+%}
+
+### Logout
+//@no-redirect
+< {%
+    client.global.clear('authCode');
+%}
+GET http://localhost:9000/logout
+
+### Request oAuth2 login
+//@no-redirect
+GET http://localhost:9000/oauth2/authorize?response_type=code&client_id=test-client
+
+> {%
+    let segments = response.headers.valueOf('Location').split('?');
+    if (segments.length == 2 && segments[1].startsWith('code=')) {
+        client.global.set('authCode', segments[1].replace('code=', ''));
+    }
+%}
+
+### Authenticate
+//@no-redirect
+POST http://localhost:9000/login
+Content-Type: application/x-www-form-urlencoded
+
+username=manager&password=0000
+
+### Authorize
+//@no-redirect
+GET http://localhost:9000/oauth2/authorize?response_type=code&client_id=test-client&continue
+
+> {%
+    if (response.status === 302) {
+        client.global.set('authCode', response.headers.valueOf('Location').split('?')[1].replace('code=', ''));
+    } else {
+        client.global.clear('authCode');
+    }
+%}
+
+### Change code to tokens
+POST http://localhost:9000/oauth2/token?grant_type=authorization_code&code={{ authCode }}
+Authorization: Basic dGVzdC1jbGllbnQ6dGVzdC1jbGllbnQ=
+
+> {%
+    if (response.status === 200) {
+        client.global.set('accessToken', response.body['access_token']);
+        client.global.set('refreshToken', response.body['refresh_token']);
+    } else {
+        client.global.clear('accessToken');
+        client.global.clear('refreshToken');
+    }
+%}
+
+### Can't close not own Task
+PUT http://localhost:3000/tasks/{{ taskId }}?close
+Authorization: Bearer {{ accessToken }}
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 400, "Response status must be 400");
+    });
+%}

@@ -10,24 +10,29 @@ import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "\"user\"")
-class User {
+class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: UUID? = null
+
     @NotBlank
     var login: String = ""
+
     @JsonIgnore
     @NotEmpty
     var passwordHash: String = ""
+
     @NotBlank
     var name: String = ""
+
     @Enumerated(STRING)
-    var role: Role = Role.NONE
+    var role: UserRole = UserRole.NONE
+
     @Transient
     var password: String? = null
 }
 
-enum class Role {
+enum class UserRole {
     ADMIN,
     MANAGER,
     USER,

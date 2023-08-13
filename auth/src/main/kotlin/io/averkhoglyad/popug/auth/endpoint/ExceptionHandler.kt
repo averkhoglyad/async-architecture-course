@@ -69,8 +69,10 @@ class ExceptionHandler {
         return createErrorResponseEntity(e, responseStatus)
     }
 
-    private fun createErrorResponseEntity(exception: Exception,
-                                          responseStatus: ResponseStatus?): ResponseEntity<ExceptionResponse> {
+    private fun createErrorResponseEntity(
+        exception: Exception,
+        responseStatus: ResponseStatus?
+    ): ResponseEntity<ExceptionResponse> {
         if (responseStatus == null) {
             return ResponseEntity(
                 ExceptionResponse(exception.message ?: "internal.server.error"),

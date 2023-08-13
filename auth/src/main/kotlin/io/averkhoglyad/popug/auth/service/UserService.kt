@@ -1,7 +1,7 @@
 package io.averkhoglyad.popug.auth.service
 
 import io.averkhoglyad.popug.auth.service.core.WritableService
-import io.averkhoglyad.popug.auth.entity.User
+import io.averkhoglyad.popug.auth.entity.UserEntity
 import io.averkhoglyad.popug.auth.repository.UserRepository
 import io.averkhoglyad.popug.auth.util.transaction
 import jakarta.persistence.EntityNotFoundException
@@ -14,35 +14,35 @@ import java.util.UUID
 
 @Service
 class UserService(
-    private val repo: UserRepository,
+    private val repository: UserRepository,
     private val passwordEncoder: PasswordEncoder
-) : WritableService<User, UUID> {
+) : WritableService<UserEntity, UUID> {
 
     @Transactional(readOnly = true)
-    override fun findAll(): List<User> {
-        return repo.findAll()
+    override fun findAll(): List<UserEntity> {
+        return repository.findAll()
     }
 
     @Transactional(readOnly = true)
-    override fun findList(pageable: Pageable): Page<User> {
-        return repo.findAll(pageable)
+    override fun findList(pageable: Pageable): Page<UserEntity> {
+        return repository.findAll(pageable)
     }
 
     @Throws(EntityNotFoundException::class)
     @Transactional(readOnly = true)
-    override fun findEntity(id: UUID): User {
-        return repo.findById(id)
+    override fun findEntity(id: UUID): UserEntity {
+        return repository.findById(id)
             .orElseThrow { EntityNotFoundException() }
     }
 
     @Transactional
-    override fun save(entity: User): User {
+    override fun save(entity: UserEntity): UserEntity {
         var entityId = entity.id
         if (entityId != null) {
             entity.passwordHash = entity.password
                 ?.takeUnless { entity.password.isNullOrEmpty() }
                 ?.let { passwordEncoder.encode(it) }
-                ?: repo.loadPasswordHash(entityId)
+                ?: repository.loadPasswordHash(entityId)
         } else {
             entity.passwordHash = passwordEncoder.encode(entity.password)
         }
@@ -52,7 +52,7 @@ class UserService(
                 // TODO: Send event
             }
         }
-        return repo.save(entity)
+        return repository.save(entity)
     }
 
     @Transactional
@@ -62,6 +62,6 @@ class UserService(
                 // TODO: Send event
             }
         }
-        repo.deleteById(id)
+        repository.deleteById(id)
     }
 }

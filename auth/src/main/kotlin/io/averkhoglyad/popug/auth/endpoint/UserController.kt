@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.auth.endpoint
 
-import io.averkhoglyad.popug.auth.entity.User
+import io.averkhoglyad.popug.auth.entity.UserEntity
 import io.averkhoglyad.popug.auth.service.UserService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -21,25 +21,25 @@ import java.util.UUID
 class UserController(private val service: UserService) {
 
     @GetMapping
-    fun list(pageable: Pageable): Page<User> {
+    fun list(pageable: Pageable): Page<UserEntity> {
         require(pageable.isPaged)
         return service.findList(pageable)
     }
 
     @GetMapping("/{id}")
-    fun details(@PathVariable id: UUID): User {
+    fun details(@PathVariable id: UUID): UserEntity {
         return service.findEntity(id)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody user: User): User {
+    fun create(@RequestBody user: UserEntity): UserEntity {
         user.id = null
         return service.save(user)
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: UUID, @RequestBody user: User): User {
+    fun update(@PathVariable id: UUID, @RequestBody user: UserEntity): UserEntity {
         user.id = id
         return service.save(user)
     }
