@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <property name="changesVersion" value="v1:20230813_1200" global="false"/>
+
+    <changeSet author="averkhoglyad" id="${changesVersion}-Create_User_table">
+        <createTable tableName="user">
+            <column name="id" type="${uuidType}">
+                <constraints primaryKey="true" primaryKeyName="PK_user" nullable="false"/>
+            </column>
+            <column name="login" type="${stringType}">
+                <constraints nullable="false" unique="true" uniqueConstraintName="UC_user_login"/>
+            </column>
+            <column name="name" type="${stringType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password_hash" type="CHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="averkhoglyad" id="${changesVersion}-Create_admin_User">
+        <insert tableName="user">
+            <column name="id">ac5780b9-472d-4ca8-b5c4-d56b61a8f5c1</column>
+            <column name="login">admin</column>
+            <column name="name">Administrator</column>
+            <!-- Password: '0000' -->
+            <column name="password_hash">$2a$10$6qMGMKGlm73WwqymTryfCezYVUMkJSWuVrVBGbklWGri2RQRkkk4C</column>
+            <column name="role">ADMIN</column>
+        </insert>
+        <rollback>
+            <delete tableName="user">
+                <where>id='ac5780b9-472d-4ca8-b5c4-d56b61a8f5c1'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

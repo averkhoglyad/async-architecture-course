@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
@@ -26,7 +28,6 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher
 import java.util.stream.Collectors
-
 
 @Configuration(proxyBeanMethods = false)
 class SecurityConfig {
@@ -59,6 +60,7 @@ class SecurityConfig {
             .authorizeHttpRequests {
                 it
                     .requestMatchers("/actuator/**").permitAll()
+                    .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN")
                     .anyRequest().authenticated()
             }
             .formLogin(withDefaults())
@@ -69,7 +71,7 @@ class SecurityConfig {
     fun jwkSource(): JWKSource<com.nimbusds.jose.proc.SecurityContext> {
         val rsaKey = generateRsa()
         val jwkSet = JWKSet(rsaKey)
-        return JWKSource { jwkSelector: JWKSelector, _ ->
+        return JWKSource { jwkSelector, _ ->
             jwkSelector.select(jwkSet)
         }
     }
@@ -77,16 +79,6 @@ class SecurityConfig {
     @Bean
     fun jwtDecoder(jwkSource: JWKSource<com.nimbusds.jose.proc.SecurityContext>): JwtDecoder {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource)
-    }
-
-    @Bean
-    fun users(): UserDetailsService {
-        val user = User.builder()
-            .username("admin")
-            .password("{noop}password")
-            .roles("user")
-            .build()
-        return InMemoryUserDetailsManager(user)
     }
 
     @Bean
@@ -102,7 +94,10 @@ class SecurityConfig {
             }
         }
     }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 }
 
-inline fun <reified C : SecurityConfigurer<DefaultSecurityFilterChain, HttpSecurity>>
+private inline fun <reified C : SecurityConfigurer<DefaultSecurityFilterChain, HttpSecurity>>
         HttpSecurity.getConfigurer(): C = this.getConfigurer(C::class.java)

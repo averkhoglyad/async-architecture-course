@@ -21,31 +21,6 @@ import kotlin.time.toJavaDuration
 class AuthServerConfig {
 
     @Bean
-    fun registeredClientRepository(): RegisteredClientRepository {
-        return InMemoryRegisteredClientRepository(
-            RegisteredClient.withId("test-client-id")
-                .clientName("Test Client")
-                .clientId("test-client")
-                .clientSecret("{noop}test-client")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:8080/code")
-                .scope(OidcScopes.OPENID)
-                .scope(OidcScopes.PROFILE)
-//                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-                .tokenSettings(
-                    TokenSettings.builder()
-                        .accessTokenTimeToLive(5.minutes.toJavaDuration())
-                        .refreshTokenTimeToLive(5.days.toJavaDuration())
-                        .build()
-                )
-                .build()
-        )
-    }
-
-    @Bean
     fun authorizationServerSettings(authorizationServerProperties: AuthServerProperties): AuthorizationServerSettings {
         return AuthorizationServerSettings.builder()
             .issuer(authorizationServerProperties.issuer)

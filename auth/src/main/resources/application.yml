@@ -3,11 +3,52 @@ server:
 
 spring:
   application:
-    name: auth
+    name: popug-auth
   security:
     oauth2:
       authorizationserver:
         issuer: http://localhost:${server.port}
+        client:
+          test-client:
+            registration:
+              client-id: test-client
+              client-secret: $2a$10$IV2h5jyTTgjMr9zhuD/2.eSr4DQvQVnjROIzToUubcrVT9U4T9YFC
+              client-name: Test Client
+              client-authentication-methods:
+                - client_secret_basic
+              authorization-grant-types:
+                - client_secret_basic
+                - authorization_code
+                - refresh_token
+              redirect-uris:
+                - http://localhost:8080/code
+              post-logout-redirect-uris:
+                - http://localhost:8080
+              scopes:
+                - openid
+                - profile
+            require-authorization-consent: false
+
+  jpa:
+    open-in-view: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/popug-auth
+    username: user
+    password: pass
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30_000
+      maximum-pool-size: 50
+      minimum-idle: 10
+      initialization-fail-timeout: 1
+      leak-detection-threshold: 0
+      register-mbeans: true
+  liquibase:
+    change-log: classpath:/migrations/changelog-master.xml
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
 
 management:
   endpoints:

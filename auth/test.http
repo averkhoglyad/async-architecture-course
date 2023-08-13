@@ -1,0 +1,166 @@
+### Request oAuth2 login
+//@no-redirect
+< {%
+    client.global.clearAll();
+%}
+GET http://localhost:9000/oauth2/authorize?response_type=code&client_id=test-client
+
+> {%
+    let segments = response.headers.valueOf('Location').split('?');
+    if (segments.length == 2 && segments[1].startsWith('code=')) {
+        client.global.set('authCode', segments[1].replace('code=', ''));
+    }
+%}
+
+### Authenticate
+//@no-redirect
+< {%
+    if (!!client.global.get('authCode')) {
+        client.log('Already have code');
+        client.exit();
+    }
+ %}
+POST http://localhost:9000/login
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=0000
+
+### Authorize
+//@no-redirect
+< {%
+    if (!!client.global.get('authCode')) {
+        client.log('Already have code');
+        client.exit();
+    }
+%}
+GET http://localhost:9000/oauth2/authorize?response_type=code&client_id=test-client&continue
+
+> {%
+    if (response.status === 302) {
+        client.global.set('authCode', response.headers.valueOf('Location').split('?')[1].replace('code=', ''));
+    } else {
+        client.global.clear('authCode');
+    }
+%}
+
+### Change code to tokens
+POST http://localhost:9000/oauth2/token?grant_type=authorization_code&code={{ authCode }}
+Authorization: Basic dGVzdC1jbGllbnQ6dGVzdC1jbGllbnQ=
+
+> {%
+    if (response.status === 200) {
+        client.global.set('accessToken', response.body['access_token']);
+        client.global.set('refreshToken', response.body['refresh_token']);
+    } else {
+        client.global.clear('accessToken');
+        client.global.clear('refreshToken');
+    }
+%}
+
+### Refresh token
+POST http://localhost:9000/oauth2/token?grant_type=refresh_token&refresh_token={{ refreshToken }}
+Authorization: Basic dGVzdC1jbGllbnQ6dGVzdC1jbGllbnQ=
+
+> {%
+    if (response.status === 200) {
+        client.global.set('accessToken', response.body['access_token']);
+        client.global.set('refreshToken', response.body['refresh_token']);
+    } else {
+        client.global.clear('accessToken');
+        client.global.clear('refreshToken');
+    }
+%}
+
+### Introspect token
+POST http://localhost:9000/oauth2/introspect?token={{ accessToken }}
+Authorization: Basic dGVzdC1jbGllbnQ6dGVzdC1jbGllbnQ=
+
+> {%
+    client.test("Token loaded and active", () => {
+        client.assert(response.status == 200, "Response status must be 200");
+        client.assert(!!response.body['active'], "Token must be active");
+    });
+ %}
+
+### Get Users page
+GET http://localhost:9000/api/users?page=1&size=5
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 200, "Response status must be 200");
+    });
+%}
+
+### Add User
+POST http://localhost:9000/api/users
+Content-Type: application/json
+
+{
+  "name": "User",
+  "login": "user",
+  "password": "pass",
+  "role": "USER"
+}
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 201, "Response status must be 200");
+        client.global.set('userId', response.body['id']);
+    });
+%}
+
+### Get User
+GET http://localhost:9000/api/users/{{ userId }}
+Content-Type: application/json
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 200, "Response status must be 200");
+        client.assert(response.body['id'] == client.global.get('userId'), "Wrong User ID");
+        client.assert(response.body['name'] == 'User', "Wrong User name");
+        client.assert(response.body['login'] == 'user', "Wrong User login");
+    });
+%}
+
+### Update User
+PUT http://localhost:9000/api/users/{{ userId }}
+Content-Type: application/json
+
+{
+  "name": "User 2",
+  "login": "user 2",
+  "role": "MANAGER"
+}
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 200, "Response status must be 200");
+        client.assert(response.body['id'] == client.global.get('userId'), "Wrong User ID");
+        client.assert(response.body['name'] == 'User 2', "Wrong User name");
+        client.assert(response.body['login'] == 'user 2', "Wrong User login");
+    });
+%}
+
+### Delete User
+DELETE http://localhost:9000/api/users/{{ userId }}
+Content-Type: application/json
+
+> {%
+    client.test("Success", () => {
+        client.assert(response.status == 204, "Response status must be 200");
+    });
+%}
+
+### No User
+GET http://localhost:9000/api/users/{{ userId }}
+Content-Type: application/json
+
+> {%
+    client.test("Not Found", () => {
+        client.assert(response.status == 404, "Response status must be 404");
+    });
+%}
+
+### Logout
+//@no-redirect
+GET http://localhost:9000/logout
