@@ -11,13 +11,13 @@
             <column name="id" type="${uuidType}">
                 <constraints primaryKey="true" primaryKeyName="PK_user" nullable="false"/>
             </column>
-            <column name="login" type="${stringType}">
-                <constraints nullable="false" unique="true" uniqueConstraintName="UC_user_login"/>
-            </column>
             <column name="name" type="${stringType}">
                 <constraints nullable="false"/>
             </column>
             <column name="role" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="${boolType}" defaultValueBoolean="true">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -26,19 +26,16 @@
     <changeSet author="averkhoglyad" id="${changesVersion}-Create_admin_User">
         <insert tableName="user">
             <column name="id">ac5780b9-472d-4ca8-b5c4-d56b61a8f5c1</column>
-            <column name="login">admin</column>
             <column name="name">Administrator</column>
             <column name="role">ADMIN</column>
         </insert>
         <insert tableName="user">
             <column name="id">1e0a2da5-751a-4e8b-b224-529b1bf4e1b1</column>
-            <column name="login">user</column>
             <column name="name">User</column>
             <column name="role">USER</column>
         </insert>
         <insert tableName="user">
             <column name="id">c21e1817-32f3-4602-804f-5345fec50517</column>
-            <column name="login">manager</column>
             <column name="name">Manager</column>
             <column name="role">MANAGER</column>
         </insert>

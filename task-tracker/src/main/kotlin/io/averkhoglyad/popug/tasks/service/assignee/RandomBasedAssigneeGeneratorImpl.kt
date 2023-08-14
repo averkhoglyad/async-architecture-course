@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.tasks.service.assignee
 
-import io.averkhoglyad.popug.tasks.persistence.entity.User
+import io.averkhoglyad.popug.tasks.persistence.entity.UserEntity
 import io.averkhoglyad.popug.tasks.persistence.entity.UserRole
 import io.averkhoglyad.popug.tasks.persistence.repository.UserRepository
 import org.springframework.data.domain.Pageable
@@ -12,11 +12,11 @@ class RandomBasedAssigneeGeneratorImpl(
     private val repo: UserRepository
 ) : AssigneeGenerator {
 
-    override fun assignee(): User {
+    override fun assignee(): UserEntity {
         val total = repo.countByRole(UserRole.USER)
         val offset = Random.nextInt(0, total.toInt())
         val position = Pageable.ofSize(1).withPage(offset)
-        val list = repo.findFirstByRole(UserRole.USER, position)
+        val list = repo.findByRole(UserRole.USER, position)
         require(list.isNotEmpty())
         return list.first()
     }

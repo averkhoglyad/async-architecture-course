@@ -1,7 +1,7 @@
 package io.averkhoglyad.popug.tasks.endpoint
 
 import io.averkhoglyad.popug.tasks.persistence.entity.Task
-import io.averkhoglyad.popug.tasks.service.UserTaskService
+import io.averkhoglyad.popug.tasks.service.TaskService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -20,7 +19,7 @@ import java.util.UUID
 @RestController
 @RequestMapping("/tasks")
 @PreAuthorize("isAuthenticated()")
-class UserTaskEndpoint(private val service: UserTaskService) {
+class UserTaskEndpoint(private val service: TaskService) {
 
     @GetMapping(params = ["!own"])
     fun listAll(pageable: Pageable): Page<Task> {

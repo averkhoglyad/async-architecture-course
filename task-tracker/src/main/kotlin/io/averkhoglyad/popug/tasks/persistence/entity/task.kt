@@ -3,7 +3,6 @@ package io.averkhoglyad.popug.tasks.persistence.entity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
-import jakarta.validation.constraints.Negative
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Positive
 import java.util.*
@@ -35,7 +34,7 @@ class Task {
     @JoinColumn(name = "assignee_id")
     @get:JsonProperty
     @set:JsonIgnore
-    var assignee: User? = null
+    var assignee: UserEntity? = null
 }
 
 enum class TaskStatus {

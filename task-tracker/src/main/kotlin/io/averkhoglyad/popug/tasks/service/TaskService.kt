@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-class UserTaskService(
+class TaskService(
     private val securityService: SecurityService,
     private val taskRepository: TaskRepository,
     private val costRevenueGenerator: CostsRevenueGenerator,
