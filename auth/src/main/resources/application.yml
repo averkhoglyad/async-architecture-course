@@ -57,15 +57,13 @@ spring:
   cloud:
     stream:
       bindings:
-        cud-user:
-          destination: cud-user
+        userModified:
+          destination: cud-User
           content-type: application/json
       kafka:
         binder:
           brokers: localhost
-          transaction:
-            producer:
-              message-key-expression:
+          zkNodes: localhost
 
 management:
   endpoints:

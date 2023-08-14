@@ -1,7 +1,7 @@
-package io.averkhoglyad.popug.tasks.repository
+package io.averkhoglyad.popug.tasks.persistence.repository
 
-import io.averkhoglyad.popug.tasks.entity.User
-import io.averkhoglyad.popug.tasks.entity.UserRole
+import io.averkhoglyad.popug.tasks.persistence.entity.User
+import io.averkhoglyad.popug.tasks.persistence.entity.UserRole
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.Window

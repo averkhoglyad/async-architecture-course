@@ -1,4 +1,4 @@
-package io.averkhoglyad.popug.tasks.entity
+package io.averkhoglyad.popug.tasks.persistence.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty

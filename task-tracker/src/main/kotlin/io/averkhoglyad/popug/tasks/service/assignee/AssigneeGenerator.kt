@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.tasks.service.assignee
 
-import io.averkhoglyad.popug.tasks.entity.User
+import io.averkhoglyad.popug.tasks.persistence.entity.User
 
 interface AssigneeGenerator {
 

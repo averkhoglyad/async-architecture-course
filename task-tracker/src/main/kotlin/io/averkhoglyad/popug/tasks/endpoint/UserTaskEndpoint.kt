@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.tasks.endpoint
 
-import io.averkhoglyad.popug.tasks.entity.Task
+import io.averkhoglyad.popug.tasks.persistence.entity.Task
 import io.averkhoglyad.popug.tasks.service.UserTaskService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

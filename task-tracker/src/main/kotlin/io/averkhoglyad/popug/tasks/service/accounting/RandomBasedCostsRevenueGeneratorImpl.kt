@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.tasks.service.accounting
 
-import io.averkhoglyad.popug.tasks.entity.Task
+import io.averkhoglyad.popug.tasks.persistence.entity.Task
 import org.springframework.stereotype.Component
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.random.Random

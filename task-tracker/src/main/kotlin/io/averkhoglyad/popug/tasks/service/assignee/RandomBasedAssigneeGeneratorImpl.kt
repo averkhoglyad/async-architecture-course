@@ -1,8 +1,8 @@
 package io.averkhoglyad.popug.tasks.service.assignee
 
-import io.averkhoglyad.popug.tasks.entity.User
-import io.averkhoglyad.popug.tasks.entity.UserRole
-import io.averkhoglyad.popug.tasks.repository.UserRepository
+import io.averkhoglyad.popug.tasks.persistence.entity.User
+import io.averkhoglyad.popug.tasks.persistence.entity.UserRole
+import io.averkhoglyad.popug.tasks.persistence.repository.UserRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 import kotlin.random.Random

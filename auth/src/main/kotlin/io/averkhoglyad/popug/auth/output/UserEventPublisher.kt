@@ -3,7 +3,6 @@ package io.averkhoglyad.popug.auth.output
 import io.averkhoglyad.popug.auth.entity.UserEntity
 import io.averkhoglyad.popug.auth.util.log4j
 import org.springframework.cloud.stream.function.StreamBridge
-import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.stereotype.Component
 
 typealias UserEvent = Pair<Action, UserEntity>
@@ -15,7 +14,7 @@ class UserEventPublisher(
 
     private val logger by log4j()
 
-    private val bindingName = "cud-user"
+    private val bindingName = "userModified"
 
     override fun emit(event: UserEvent) {
         val (action, user) = event

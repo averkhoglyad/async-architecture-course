@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.tasks.service.accounting
 
-import io.averkhoglyad.popug.tasks.entity.Task
+import io.averkhoglyad.popug.tasks.persistence.entity.Task
 
 interface CostsRevenueGenerator {
 

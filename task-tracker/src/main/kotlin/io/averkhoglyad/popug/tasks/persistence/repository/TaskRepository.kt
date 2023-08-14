@@ -1,7 +1,7 @@
-package io.averkhoglyad.popug.tasks.repository
+package io.averkhoglyad.popug.tasks.persistence.repository
 
-import io.averkhoglyad.popug.tasks.entity.Task
-import io.averkhoglyad.popug.tasks.entity.TaskStatus
+import io.averkhoglyad.popug.tasks.persistence.entity.Task
+import io.averkhoglyad.popug.tasks.persistence.entity.TaskStatus
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository

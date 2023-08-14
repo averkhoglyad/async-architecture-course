@@ -1,8 +1,8 @@
 package io.averkhoglyad.popug.tasks.service
 
-import io.averkhoglyad.popug.tasks.entity.Task
-import io.averkhoglyad.popug.tasks.entity.TaskStatus
-import io.averkhoglyad.popug.tasks.repository.TaskRepository
+import io.averkhoglyad.popug.tasks.persistence.entity.Task
+import io.averkhoglyad.popug.tasks.persistence.entity.TaskStatus
+import io.averkhoglyad.popug.tasks.persistence.repository.TaskRepository
 import io.averkhoglyad.popug.tasks.security.SecurityService
 import io.averkhoglyad.popug.tasks.service.accounting.CostsRevenueGenerator
 import io.averkhoglyad.popug.tasks.service.assignee.AssigneeGenerator
@@ -52,6 +52,7 @@ class UserTaskService(
                 // TODO: Send event
             }
         }
+
         return taskRepository.save(task)
     }
 
@@ -60,8 +61,11 @@ class UserTaskService(
     fun close(id: UUID): Task {
         val task = taskRepository.findById(id)
             .orElseThrow { EntityNotFoundException() }
+
         require(task.assignee?.id == securityService.currentUserId())
+
         task.status = TaskStatus.CLOSED
+
         transaction {
             afterCommit {
                 // TODO: Send event
@@ -71,15 +75,18 @@ class UserTaskService(
     }
 
     @Transactional
-    fun reassign() {
-        taskRepository.streamByStatus(TaskStatus.OPEN)
+    fun reassign(): List<Task> {
+        val tasks = taskRepository.streamByStatus(TaskStatus.OPEN)
             .peek { it.assignee = assigneeGenerator.assignee() }
-            .forEach { taskRepository.save(it) }
+            .map { taskRepository.save(it) }
+            .toList()
 
         transaction {
             afterCommit {
                 // TODO: Send event
             }
         }
+
+        return tasks
     }
 }
