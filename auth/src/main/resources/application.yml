@@ -54,6 +54,19 @@ spring:
       pageable:
         one-indexed-parameters: true
 
+  cloud:
+    stream:
+      bindings:
+        cud-user:
+          destination: cud-user
+          content-type: application/json
+      kafka:
+        binder:
+          brokers: localhost
+          transaction:
+            producer:
+              message-key-expression:
+
 management:
   endpoints:
     web:

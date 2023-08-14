@@ -1,11 +1,9 @@
 package io.averkhoglyad.popug.tasks.endpoint
 
-import io.averkhoglyad.popug.tasks.data.ExceptionResponse
 import io.averkhoglyad.popug.tasks.util.log4j
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
-import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.HttpMediaTypeNotSupportedException
@@ -22,70 +20,70 @@ class ExceptionHandler {
     private val logger by log4j()
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    fun handleException(e: AccessDeniedException): ExceptionResponse {
-        return ExceptionResponse("access.denied")
+    fun handleException(e: AccessDeniedException): ProblemDetail {
+        logger.warn("Access denied", e)
+        return ProblemDetail
+            .forStatusAndDetail(HttpStatus.FORBIDDEN, "access.denied")
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleException(e: MissingServletRequestParameterException): ExceptionResponse {
+    fun handleException(e: MissingServletRequestParameterException): ProblemDetail {
         logger.warn("Param ${e.parameterName} is required", e)
-        return ExceptionResponse("param.required", e.parameterName)
+        return ProblemDetail
+            .forStatusAndDetail(HttpStatus.BAD_REQUEST, "param.required")
+            .also { it.setProperty("parameter", e.parameterName) }
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleException(e: HttpMediaTypeNotSupportedException): ExceptionResponse {
+    fun handleException(e: HttpMediaTypeNotSupportedException): ProblemDetail {
         logger.warn("Invalid content type ${e.contentType}", e)
-        return ExceptionResponse("content.type.invalid", e.contentType!!)
+        return ProblemDetail
+            .forStatusAndDetail(HttpStatus.BAD_REQUEST, "content.type.invalid")
+            .also { it.setProperty("contentType", e.contentType) }
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleException(e: HttpMessageNotReadableException): ExceptionResponse {
+    fun handleException(e: HttpMessageNotReadableException): ProblemDetail {
         logger.warn("Invalid json", e)
-        return ExceptionResponse("invalid.json.body")
+        return ProblemDetail
+            .forStatusAndDetail(HttpStatus.BAD_REQUEST, "invalid.json.body")
     }
 
+
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    fun handleException(e: HttpRequestMethodNotSupportedException): ExceptionResponse {
+    fun handleException(e: HttpRequestMethodNotSupportedException): ProblemDetail {
         logger.warn("HttpStatus.METHOD_NOT_ALLOWED: ", e)
-        return ExceptionResponse("method.not.allowed")
+        return ProblemDetail
+            .forStatusAndDetail(HttpStatus.BAD_REQUEST, "method.not.allowed")
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleValidationException(e: IllegalArgumentException): ExceptionResponse {
+    fun handleValidationException(e: IllegalArgumentException): ProblemDetail {
         logger.warn("Illegal argument", e)
-        return ExceptionResponse("illegal.argument")
+        return ProblemDetail
+            .forStatusAndDetail(HttpStatus.BAD_REQUEST, "illegal.argument")
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    fun handleNotFoundException(e: EntityNotFoundException): ExceptionResponse {
+    fun handleNotFoundException(e: EntityNotFoundException): ProblemDetail {
         logger.warn("Entity not found: ", e)
-        return ExceptionResponse("entity.not.found")
+        return ProblemDetail
+            .forStatusAndDetail(HttpStatus.NOT_FOUND, "entity.not.found")
     }
 
-    @ExceptionHandler
-    fun handleAnyUncaughtException(e: Exception): ResponseEntity<ExceptionResponse> {
+    @ExceptionHandler(Throwable::class)
+    fun handleAnyUncaughtException(e: Exception): ProblemDetail {
         logger.error("Generic exception caught:", e)
         val responseStatus = e::class.findAnnotation<ResponseStatus>()
         return createErrorResponseEntity(e, responseStatus)
     }
 
-    private fun createErrorResponseEntity(
-        exception: Exception,
-        responseStatus: ResponseStatus?
-    ): ResponseEntity<ExceptionResponse> {
+    private fun createErrorResponseEntity(exception: Exception, responseStatus: ResponseStatus?): ProblemDetail {
         if (responseStatus == null) {
-            return ResponseEntity(
-                ExceptionResponse(exception.message ?: "internal.server.error"),
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            val message = exception.message ?: "internal.server.error"
+            return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, message)
         }
+
         val status: HttpStatus = responseStatus.code
             .takeUnless { it == HttpStatus.INTERNAL_SERVER_ERROR }
             ?: responseStatus.value
@@ -93,6 +91,7 @@ class ExceptionHandler {
         val message = (exception.message ?: responseStatus.reason)
             .takeUnless { it.isBlank() }
             ?: "internal.server.error"
-        return ResponseEntity(ExceptionResponse(message), status)
+
+        return ProblemDetail.forStatusAndDetail(status, message)
     }
 }

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class DbAwareUserDetailsService(private val repo: UserRepository) : UserDetailsService {
+class DbAwareUserDetailsService(private val repository: UserRepository) : UserDetailsService {
 
     @Transactional(readOnly = true)
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = repo.findByLogin(username)
+        val user = repository.findByLogin(username)
             .orElseThrow { UsernameNotFoundException("Username $username not found") }
         return User.builder()
             .username(user.id.toString())
