@@ -13,9 +13,9 @@ data class UserDto(
 
 
 enum class Action {
-    CREATE,
-    UPDATE,
-    DELETE
+    CREATED,
+    UPDATED,
+    DELETED
 }
 
 fun UserDto.toEntity(): UserEntity = UserEntity().also {

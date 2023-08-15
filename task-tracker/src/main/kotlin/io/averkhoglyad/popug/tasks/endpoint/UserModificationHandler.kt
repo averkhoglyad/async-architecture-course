@@ -7,6 +7,7 @@ import io.averkhoglyad.popug.tasks.event.toId
 import io.averkhoglyad.popug.tasks.service.UserService
 import org.springframework.messaging.Message
 import org.springframework.stereotype.Component
+import kotlin.reflect.full.declaredFunctions
 
 @Component
 class UserModificationHandler(
@@ -14,11 +15,14 @@ class UserModificationHandler(
 ) {
 
     fun handleUserModification(message: Message<UserDto>) {
+
+        this::class.declaredFunctions
+
         val dto = message.payload
         when(dto.action) {
-            CREATE -> service.create(dto.toEntity())
-            UPDATE -> service.update(dto.toEntity())
-            DELETE -> service.delete(dto.toId())
+            CREATED -> service.create(dto.toEntity())
+            UPDATED -> service.update(dto.toEntity())
+            DELETED -> service.delete(dto.toId())
         }
     }
 }

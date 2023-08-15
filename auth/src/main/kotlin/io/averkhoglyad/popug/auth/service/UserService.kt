@@ -47,7 +47,7 @@ class UserService(
 
         transaction {
             afterCommit {
-                val action = if (entityId == null) Action.CREATE else Action.UPDATE
+                val action = if (entityId == null) Action.CREATED else Action.UPDATED
                 eventPublisher.emit(action, entity)
             }
         }
@@ -58,7 +58,7 @@ class UserService(
     fun delete(id: UUID) {
         transaction {
             afterCommit {
-                eventPublisher.emit(Action.DELETE, UserEntity().apply { this.id = id })
+                eventPublisher.emit(Action.DELETED, UserEntity().apply { this.id = id })
             }
         }
         repository.deleteById(id)
