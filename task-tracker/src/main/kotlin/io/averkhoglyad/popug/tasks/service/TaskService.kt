@@ -1,5 +1,6 @@
 package io.averkhoglyad.popug.tasks.service
 
+import io.averkhoglyad.popug.tasks.output.*
 import io.averkhoglyad.popug.tasks.persistence.entity.Task
 import io.averkhoglyad.popug.tasks.persistence.entity.TaskStatus
 import io.averkhoglyad.popug.tasks.persistence.repository.TaskRepository
@@ -19,7 +20,9 @@ class TaskService(
     private val securityService: SecurityService,
     private val taskRepository: TaskRepository,
     private val costRevenueGenerator: CostsRevenueGenerator,
-    private val assigneeGenerator: AssigneeGenerator
+    private val assigneeGenerator: AssigneeGenerator,
+    private val streamingEventPublisher: TaskStreamingEventPublisher,
+    private val lifeCycleEventPublisher: TaskLifecycleEventPublisher,
 ) {
 
     @Transactional(readOnly = true)
@@ -49,7 +52,8 @@ class TaskService(
 
         transaction {
             afterCommit {
-                // TODO: Send event
+                streamingEventPublisher.emit(StreamingAction.CREATED, task)
+                lifeCycleEventPublisher.emit(TaskLifecycle.CREATED, task)
             }
         }
 
@@ -68,7 +72,8 @@ class TaskService(
 
         transaction {
             afterCommit {
-                // TODO: Send event
+                streamingEventPublisher.emit(StreamingAction.UPDATED, task)
+                lifeCycleEventPublisher.emit(TaskLifecycle.CLOSED, task)
             }
         }
         return taskRepository.save(task)
@@ -83,7 +88,9 @@ class TaskService(
 
         transaction {
             afterCommit {
-                // TODO: Send event
+                tasks.forEach {
+                    lifeCycleEventPublisher.emit(TaskLifecycle.REASSIGNED, it)
+                }
             }
         }
 

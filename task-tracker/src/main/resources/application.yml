@@ -40,6 +40,9 @@ spring:
           destination: Streaming-User
           content-type: application/json
           group: taskTracker
+        taskLifecycle:
+          destination: TaskLifeCycle
+          content-type: application/json
       kafka:
         binder:
           brokers: localhost
