@@ -72,7 +72,6 @@ class TaskService(
 
         transaction {
             afterCommit {
-                streamingEventPublisher.emit(StreamingAction.UPDATED, task)
                 lifeCycleEventPublisher.emit(TaskLifecycle.CLOSED, task)
             }
         }
