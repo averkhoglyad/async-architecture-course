@@ -36,8 +36,8 @@ spring:
       definition: userModified
     stream:
       bindings:
-        userModified-in-0:
-          destination: cud-User
+        streamingUser-in-0:
+          destination: Streaming-User
           content-type: application/json
           group: taskTracker
       kafka:

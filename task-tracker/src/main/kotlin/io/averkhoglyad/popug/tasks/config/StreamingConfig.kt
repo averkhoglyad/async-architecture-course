@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.tasks.config
 
-import io.averkhoglyad.popug.tasks.endpoint.UserModificationHandler
+import io.averkhoglyad.popug.tasks.endpoint.UserStreamingHandler
 import io.averkhoglyad.popug.tasks.event.UserDto
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,6 +11,6 @@ import java.util.function.Consumer
 class StreamingConfig {
 
     @Bean
-    fun userModified(handler: UserModificationHandler) = Consumer<Message<UserDto>>(handler::handleUserModification)
+    fun streamingUser(handler: UserStreamingHandler) = Consumer<Message<UserDto>>(handler::handleUserModification)
 
 }
