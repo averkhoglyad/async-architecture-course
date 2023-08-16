@@ -14,12 +14,12 @@ class UserEventPublisher(
 
     private val logger by log4j()
 
-    private val bindingName = "userModified"
+    private val bindingName = "streamingUser"
 
     override fun emit(event: UserEvent) {
         val (action, user) = event
-        val dto = user.toDto(action)
-        logger.debug("Sending message {} for User: {}", action, dto)
+        val dto = event.toDto()
+        logger.debug("Sending streaming message {} for User#{}: {}", action, user, dto)
         streamBridge.send(bindingName, dto)
     }
 }
@@ -34,10 +34,10 @@ data class UserDto(
     val role: String
 )
 
-private fun UserEntity.toDto(action: Action): UserDto = UserDto(
-    action = action,
-    id = this.id.toString(),
-    login = this.login,
-    name = this.name,
-    role = this.role.name,
+private fun UserEvent.toDto(): UserDto = UserDto(
+    action = first,
+    id = second.id.toString(),
+    login = second.login,
+    name = second.name,
+    role = second.role.name,
 )

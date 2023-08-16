@@ -57,8 +57,8 @@ spring:
   cloud:
     stream:
       bindings:
-        userModified:
-          destination: cud-User
+        streamingUser:
+          destination: Streaming-User
           content-type: application/json
       kafka:
         binder:
