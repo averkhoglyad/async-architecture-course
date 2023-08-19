@@ -1,5 +1,6 @@
 package io.averkhoglyad.popug.tasks.service
 
+import io.averkhoglyad.popug.auth.service.publicid.PublicIdGenerator
 import io.averkhoglyad.popug.tasks.output.*
 import io.averkhoglyad.popug.tasks.persistence.entity.Task
 import io.averkhoglyad.popug.tasks.persistence.entity.TaskStatus
@@ -18,6 +19,7 @@ import java.util.*
 @Service
 class TaskService(
     private val securityService: SecurityService,
+    private val publicIdGenerator: PublicIdGenerator<Task>,
     private val taskRepository: TaskRepository,
     private val costRevenueGenerator: CostsRevenueGenerator,
     private val assigneeGenerator: AssigneeGenerator,
@@ -46,14 +48,15 @@ class TaskService(
 
     @Transactional
     fun create(task: Task): Task {
+        task.publicId = publicIdGenerator.generate(task)
         task.assignee = assigneeGenerator.assignee()
         task.userCost = costRevenueGenerator.generateCost(task)
         task.userRevenue = costRevenueGenerator.generateRevenue(task)
 
         transaction {
             afterCommit {
-                streamingEventPublisher.emit(StreamingAction.CREATED, task)
-                lifeCycleEventPublisher.emit(TaskLifecycle.CREATED, task)
+                streamingEventPublisher.created(task)
+                lifeCycleEventPublisher.created(task)
             }
         }
 
@@ -72,7 +75,7 @@ class TaskService(
 
         transaction {
             afterCommit {
-                lifeCycleEventPublisher.emit(TaskLifecycle.CLOSED, task)
+                lifeCycleEventPublisher.closed(task)
             }
         }
         return taskRepository.save(task)
@@ -88,7 +91,7 @@ class TaskService(
         transaction {
             afterCommit {
                 tasks.forEach {
-                    lifeCycleEventPublisher.emit(TaskLifecycle.REASSIGNED, it)
+                    lifeCycleEventPublisher.reassigned(it)
                 }
             }
         }

@@ -1,10 +1,9 @@
 package io.averkhoglyad.popug.auth.service
 
 import io.averkhoglyad.popug.auth.entity.UserEntity
-import io.averkhoglyad.popug.auth.output.Action
-import io.averkhoglyad.popug.auth.output.UserEventPublisher
-import io.averkhoglyad.popug.auth.output.emit
+import io.averkhoglyad.popug.auth.output.*
 import io.averkhoglyad.popug.auth.repository.UserRepository
+import io.averkhoglyad.popug.auth.service.publicid.PublicIdGenerator
 import io.averkhoglyad.popug.auth.util.transaction
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.domain.Page
@@ -16,6 +15,7 @@ import java.util.*
 
 @Service
 class UserService(
+    private val publicIdGenerator: PublicIdGenerator<UserEntity>,
     private val repository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val eventPublisher: UserEventPublisher
@@ -42,13 +42,17 @@ class UserService(
                 ?.let { passwordEncoder.encode(it) }
                 ?: repository.loadPasswordHash(entityId)
         } else {
+            entity.publicId = publicIdGenerator.generate(entity)
             entity.passwordHash = passwordEncoder.encode(entity.password)
         }
 
         transaction {
             afterCommit {
-                val action = if (entityId == null) Action.CREATED else Action.UPDATED
-                eventPublisher.emit(action, entity)
+                if (entityId == null) {
+                    eventPublisher.created(entity)
+                } else {
+                    eventPublisher.updated(entity)
+                }
             }
         }
         return repository.save(entity)
@@ -56,11 +60,13 @@ class UserService(
 
     @Transactional
     fun delete(id: UUID) {
+        val user = repository.findById(id)
+            .orElseThrow { EntityNotFoundException() }
+        repository.delete(user)
         transaction {
             afterCommit {
-                eventPublisher.emit(Action.DELETED, UserEntity().apply { this.id = id })
+                eventPublisher.deleted(user)
             }
         }
-        repository.deleteById(id)
     }
 }

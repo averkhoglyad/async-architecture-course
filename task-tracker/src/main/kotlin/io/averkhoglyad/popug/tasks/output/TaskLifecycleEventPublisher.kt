@@ -3,6 +3,7 @@ package io.averkhoglyad.popug.tasks.output
 import io.averkhoglyad.popug.tasks.persistence.entity.Task
 import io.averkhoglyad.popug.tasks.util.log4j
 import org.springframework.cloud.stream.function.StreamBridge
+import org.springframework.messaging.support.GenericMessage
 import org.springframework.stereotype.Component
 
 typealias TaskLifecycleEvent = Pair<TaskLifecycle, Task>
@@ -17,14 +18,16 @@ class TaskLifecycleEventPublisher(
     private val bindingName = "taskLifecycle"
 
     override fun emit(event: TaskLifecycleEvent) {
-        val (action, task) = event
+        val (eventName, task) = event
         val dto = event.toDto()
-        logger.debug("Sending lifecycle message {} for Task#{}: {}", action, task.id, dto)
-        streamBridge.send(bindingName, dto)
+        logger.debug("Sending lifecycle message {} for Task#{}: {}", eventName, task.publicId, dto)
+        streamBridge.send(bindingName, GenericMessage(dto, mapOf("X-Event-Name" to eventName.toString())))
     }
 }
 
-fun EventPublisher<TaskLifecycleEvent>.emit(action: TaskLifecycle, task: Task) = this.emit(action to task)
+fun EventPublisher<TaskLifecycleEvent>.created(task: Task) = this.emit(TaskLifecycle.CREATED to task)
+fun EventPublisher<TaskLifecycleEvent>.reassigned(task: Task) = this.emit(TaskLifecycle.REASSIGNED to task)
+fun EventPublisher<TaskLifecycleEvent>.closed(task: Task) = this.emit(TaskLifecycle.CLOSED to task)
 
 enum class TaskLifecycle {
     CREATED,

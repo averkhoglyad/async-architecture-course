@@ -11,6 +11,9 @@
             <column name="id" type="${uuidType}">
                 <constraints primaryKey="true" primaryKeyName="PK_task" nullable="false"/>
             </column>
+            <column name="public_id" type="${stringType}">
+                <constraints nullable="false" unique="true" uniqueConstraintName="UC_task_public_id"/>
+            </column>
             <column name="title" type="${stringType}">
                 <constraints nullable="false"/>
             </column>

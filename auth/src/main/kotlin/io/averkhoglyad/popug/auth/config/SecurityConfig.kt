@@ -2,6 +2,7 @@ package io.averkhoglyad.popug.auth.config
 
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
+import com.nimbusds.jose.proc.SecurityContext
 import io.averkhoglyad.popug.auth.entity.UserEntity
 import io.averkhoglyad.popug.auth.util.generateRsa
 import org.springframework.context.annotation.Bean
@@ -65,7 +66,7 @@ class SecurityConfig {
     }
 
     @Bean
-    fun jwkSource(): JWKSource<com.nimbusds.jose.proc.SecurityContext> {
+    fun jwkSource(): JWKSource<SecurityContext> {
         val rsaKey = generateRsa()
         val jwkSet = JWKSet(rsaKey)
         return JWKSource { jwkSelector, _ ->
@@ -74,7 +75,7 @@ class SecurityConfig {
     }
 
     @Bean
-    fun jwtDecoder(jwkSource: JWKSource<com.nimbusds.jose.proc.SecurityContext>): JwtDecoder {
+    fun jwtDecoder(jwkSource: JWKSource<SecurityContext>): JwtDecoder {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource)
     }
 

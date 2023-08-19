@@ -16,6 +16,10 @@ class UserEntity {
     var id: UUID? = null
 
     @NotBlank
+    @Column(updatable = false)
+    var publicId: String = ""
+
+    @NotBlank
     var login: String = ""
 
     @JsonIgnore

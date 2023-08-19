@@ -32,8 +32,8 @@ spring:
         one-indexed-parameters: true
 
   cloud:
-    function:
-      definition: userModified
+#    function:
+#      definition: userModified
     stream:
       bindings:
         streamingUser-in-0:

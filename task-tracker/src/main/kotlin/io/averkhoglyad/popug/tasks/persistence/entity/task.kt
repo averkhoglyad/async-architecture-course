@@ -12,6 +12,7 @@ class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: UUID? = null
+    var publicId: String = ""
     var title: String = ""
     var description: String = ""
 

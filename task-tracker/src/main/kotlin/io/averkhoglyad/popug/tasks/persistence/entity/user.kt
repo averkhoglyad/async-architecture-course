@@ -7,7 +7,11 @@ import java.util.*
 @Table(name = "\"user\"")
 class UserEntity {
     @Id
-    var id: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    var id: UUID? = null
+
+    var publicId: String = ""
+
     var name: String = ""
 
     @Enumerated(EnumType.STRING)

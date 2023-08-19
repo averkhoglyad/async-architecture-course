@@ -5,8 +5,7 @@ import io.averkhoglyad.popug.tasks.persistence.entity.UserRole
 import java.util.UUID
 
 data class UserDto(
-    val action: StreamingAction,
-    val id: String,
+    val publicId: String,
     val name: String,
     val role: String
 )
@@ -17,11 +16,9 @@ enum class StreamingAction {
     DELETED
 }
 
-fun UserDto.toEntity(): UserEntity = UserEntity().also {
-    it.id = UUID.fromString(this.id)
-    it.name = this.name
-    it.role = UserRole.valueOf(this.role)
-    it.isActive = action != StreamingAction.DELETED
-}
-
-fun UserDto.toId(): UUID = UUID.fromString(this.id)
+fun UserDto.toEntity(entity: UserEntity): UserEntity = entity
+    .also {
+        it.publicId = this.publicId
+        it.name = this.name
+        it.role = UserRole.valueOf(this.role)
+    }
