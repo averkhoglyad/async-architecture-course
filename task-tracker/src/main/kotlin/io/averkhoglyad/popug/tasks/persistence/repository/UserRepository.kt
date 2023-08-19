@@ -10,7 +10,7 @@ import java.util.stream.Stream
 
 interface UserRepository : JpaRepository<UserEntity, UUID> {
 
-    fun findByPublicId(publicId: String): Optional<UserEntity>
+    fun findByPublicId(publicId: UUID): Optional<UserEntity>
 
     @Query("SELECT count(u) FROM UserEntity u WHERE u.isActive=true AND u.role=?1")
     fun countByRole(role: UserRole): Long

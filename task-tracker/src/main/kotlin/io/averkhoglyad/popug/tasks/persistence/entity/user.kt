@@ -8,15 +8,13 @@ import java.util.*
 class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, insertable = false)
     var id: UUID? = null
-
-    var publicId: String = ""
-
+    @Column(updatable = false)
+    var publicId: UUID? = null
     var name: String = ""
-
     @Enumerated(EnumType.STRING)
     var role: UserRole = UserRole.NONE
-
     var isActive: Boolean = true
 }
 

@@ -5,6 +5,7 @@ import io.averkhoglyad.popug.auth.util.log4j
 import org.springframework.cloud.stream.function.StreamBridge
 import org.springframework.messaging.support.GenericMessage
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 typealias UserEvent = Pair<CudEvent, UserEntity>
 
@@ -32,7 +33,7 @@ fun EventPublisher<UserEvent>.updated(user: UserEntity) = this.emit(CudEvent.UPD
 fun EventPublisher<UserEvent>.deleted(user: UserEntity) = this.emit(CudEvent.DELETED to user)
 
 data class UserDto(
-    val publicId: String,
+    val publicId: UUID,
     val login: String,
     val name: String,
     val role: String

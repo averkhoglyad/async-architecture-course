@@ -13,11 +13,11 @@ import kotlin.jvm.Transient
 class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, insertable = false)
     var id: UUID? = null
 
-    @NotBlank
     @Column(updatable = false)
-    var publicId: String = ""
+    lateinit var publicId: UUID
 
     @NotBlank
     var login: String = ""

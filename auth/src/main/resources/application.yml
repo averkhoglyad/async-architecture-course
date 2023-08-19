@@ -29,7 +29,6 @@ spring:
                 - profile
             require-authorization-consent: false
             token:
-              #              id-token-signature-algorithm:
               access-token-time-to-live: PT15M
               refresh-token-time-to-live: PT9H
 

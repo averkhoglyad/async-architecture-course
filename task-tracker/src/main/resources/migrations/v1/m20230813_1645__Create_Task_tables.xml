@@ -11,7 +11,7 @@
             <column name="id" type="${uuidType}">
                 <constraints primaryKey="true" primaryKeyName="PK_task" nullable="false"/>
             </column>
-            <column name="public_id" type="${stringType}">
+            <column name="public_id" type="${uuidType}">
                 <constraints nullable="false" unique="true" uniqueConstraintName="UC_task_public_id"/>
             </column>
             <column name="title" type="${stringType}">
@@ -39,6 +39,9 @@
         <addForeignKeyConstraint constraintName="FK_task__user"
                                  baseTableName="task" baseColumnNames="assignee_id"
                                  referencedTableName="user" referencedColumnNames="id"/>
+        <createIndex tableName="task" indexName="I_task_public_id">
+            <column name="public_id"/>
+        </createIndex>
     </changeSet>
 
 </databaseChangeLog>

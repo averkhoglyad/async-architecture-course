@@ -6,6 +6,7 @@ import io.averkhoglyad.popug.tasks.persistence.entity.UserEntity
 import io.averkhoglyad.popug.tasks.persistence.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class UserService(
@@ -26,7 +27,7 @@ class UserService(
     }
 
     @Transactional
-    fun delete(userPublicId: String) {
+    fun delete(userPublicId: UUID) {
         repository
             .findByPublicId(userPublicId)
             .ifPresent { repository.save(it.apply { isActive = false }) }

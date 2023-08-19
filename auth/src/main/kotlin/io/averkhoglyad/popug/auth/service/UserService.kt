@@ -3,7 +3,6 @@ package io.averkhoglyad.popug.auth.service
 import io.averkhoglyad.popug.auth.entity.UserEntity
 import io.averkhoglyad.popug.auth.output.*
 import io.averkhoglyad.popug.auth.repository.UserRepository
-import io.averkhoglyad.popug.auth.service.publicid.PublicIdGenerator
 import io.averkhoglyad.popug.auth.util.transaction
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.domain.Page
@@ -15,7 +14,6 @@ import java.util.*
 
 @Service
 class UserService(
-    private val publicIdGenerator: PublicIdGenerator<UserEntity>,
     private val repository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val eventPublisher: UserEventPublisher
@@ -42,7 +40,7 @@ class UserService(
                 ?.let { passwordEncoder.encode(it) }
                 ?: repository.loadPasswordHash(entityId)
         } else {
-            entity.publicId = publicIdGenerator.generate(entity)
+            entity.publicId = UUID.randomUUID()
             entity.passwordHash = passwordEncoder.encode(entity.password)
         }
 

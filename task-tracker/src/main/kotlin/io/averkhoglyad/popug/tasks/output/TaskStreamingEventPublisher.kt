@@ -6,6 +6,7 @@ import io.averkhoglyad.popug.tasks.util.log4j
 import org.springframework.cloud.stream.function.StreamBridge
 import org.springframework.messaging.support.GenericMessage
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 private typealias TaskStreamingEvent = Pair<CudEvent, Task>
 
@@ -31,7 +32,7 @@ fun EventPublisher<TaskStreamingEvent>.updated(user: Task) = this.emit(CudEvent.
 fun EventPublisher<TaskStreamingEvent>.deleted(user: Task) = this.emit(CudEvent.DELETED to user)
 
 data class TaskDto(
-    var publicId: String = "",
+    var publicId: UUID,
     var title: String = "",
     var description: String = "",
     var userCost: Int = 0,

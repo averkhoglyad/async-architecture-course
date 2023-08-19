@@ -1,6 +1,5 @@
 package io.averkhoglyad.popug.tasks.service
 
-import io.averkhoglyad.popug.auth.service.publicid.PublicIdGenerator
 import io.averkhoglyad.popug.tasks.output.*
 import io.averkhoglyad.popug.tasks.persistence.entity.Task
 import io.averkhoglyad.popug.tasks.persistence.entity.TaskStatus
@@ -19,7 +18,6 @@ import java.util.*
 @Service
 class TaskService(
     private val securityService: SecurityService,
-    private val publicIdGenerator: PublicIdGenerator<Task>,
     private val taskRepository: TaskRepository,
     private val costRevenueGenerator: CostsRevenueGenerator,
     private val assigneeGenerator: AssigneeGenerator,
@@ -48,7 +46,7 @@ class TaskService(
 
     @Transactional
     fun create(task: Task): Task {
-        task.publicId = publicIdGenerator.generate(task)
+        task.publicId = UUID.randomUUID()
         task.assignee = assigneeGenerator.assignee()
         task.userCost = costRevenueGenerator.generateCost(task)
         task.userRevenue = costRevenueGenerator.generateRevenue(task)
@@ -69,7 +67,7 @@ class TaskService(
         val task = taskRepository.findById(id)
             .orElseThrow { EntityNotFoundException() }
 
-        require(task.assignee?.id == securityService.currentUserId())
+        require(task.assignee?.publicId == securityService.currentUserId())
 
         task.status = TaskStatus.CLOSED
 

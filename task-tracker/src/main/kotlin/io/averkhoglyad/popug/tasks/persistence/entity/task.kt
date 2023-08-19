@@ -3,6 +3,7 @@ package io.averkhoglyad.popug.tasks.persistence.entity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Positive
 import java.util.*
@@ -11,8 +12,12 @@ import java.util.*
 class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, insertable = false)
     var id: UUID? = null
-    var publicId: String = ""
+    @Column(updatable = false)
+    lateinit var publicId: UUID
+
+    @NotBlank
     var title: String = ""
     var description: String = ""
 
