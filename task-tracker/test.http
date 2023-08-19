@@ -54,7 +54,7 @@ GET http://localhost:3000/tasks?page=1&size=5
 
 > {%
     client.test("Failed", () => {
-        client.assert(response.status == 401, "Response status must be 401");
+        client.assert(response.status == 403, "Response status must be 403");
     });
 %}
 

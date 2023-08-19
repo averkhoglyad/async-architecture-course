@@ -98,6 +98,7 @@ Content-Type: application/json
     client.test("Success", () => {
         client.assert(response.status == 201, "Response status must be 200");
         client.global.set('userId', response.body['id']);
+        client.global.set('userPublicId', response.body['publicId']);
     });
 %}
 
@@ -119,6 +120,7 @@ PUT http://localhost:9000/api/users/{{ userId }}
 Content-Type: application/json
 
 {
+  "publicId": "{{  userPublicId }}",
   "name": "User {{  $random.alphabetic(6) }}",
   "login": "user {{  $random.alphabetic(6) }}",
   "role": "MANAGER"
