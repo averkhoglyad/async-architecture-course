@@ -28,6 +28,19 @@
             <artifactId>kotlin-reflect</artifactId>
         </dependency>
 
+        <!-- Shared Commons -->
+        <dependency>
+            <groupId>io.averkhoglyad.popug</groupId>
+            <artifactId>schemas</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.averkhoglyad.popug</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

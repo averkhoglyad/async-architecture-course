@@ -17,7 +17,7 @@ class UserEntity {
     var id: UUID? = null
 
     @Column(updatable = false)
-    lateinit var publicId: UUID
+    var publicId: UUID = UUID.randomUUID()
 
     @NotBlank
     var login: String = ""

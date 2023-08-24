@@ -1,10 +1,12 @@
 package io.averkhoglyad.popug.auth.output
 
 import io.averkhoglyad.popug.auth.entity.UserEntity
-import io.averkhoglyad.popug.auth.util.log4j
+import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
+import io.averkhoglyad.popug.common.log4j
 import org.springframework.cloud.stream.function.StreamBridge
 import org.springframework.messaging.support.GenericMessage
 import org.springframework.stereotype.Component
+import java.time.Instant
 import java.util.UUID
 
 typealias UserEvent = Pair<CudEvent, UserEntity>
@@ -21,8 +23,15 @@ class UserEventPublisher(
     override fun emit(event: UserEvent) {
         val (eventName, user) = event
         val dto = user.toDto()
+
         logger.debug("Sending streaming message {} for User#{}: {}", eventName, user.publicId, dto)
-        streamBridge.send(bindingName, GenericMessage(dto, mapOf("X-Event-Name" to eventName.toString())))
+
+        val headers = mapOf(
+            PopugKafkaHeaders.EVENT_NAME to eventName.toString(),
+            PopugKafkaHeaders.PUBLISHED_AT to Instant.now().toString(),
+            PopugKafkaHeaders.EVENT_VERSION to "v1",
+        )
+        streamBridge.send(bindingName, GenericMessage(dto, headers))
     }
 }
 
@@ -34,14 +43,12 @@ fun EventPublisher<UserEvent>.deleted(user: UserEntity) = this.emit(CudEvent.DEL
 
 data class UserDto(
     val publicId: UUID,
-    val login: String,
     val name: String,
     val role: String
 )
 
 private fun UserEntity.toDto(): UserDto = UserDto(
     publicId = this.publicId,
-    login = this.login,
     name = this.name,
     role = this.role.name,
 )

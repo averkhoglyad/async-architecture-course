@@ -3,7 +3,7 @@ package io.averkhoglyad.popug.auth.service
 import io.averkhoglyad.popug.auth.entity.UserEntity
 import io.averkhoglyad.popug.auth.output.*
 import io.averkhoglyad.popug.auth.repository.UserRepository
-import io.averkhoglyad.popug.auth.util.transaction
+import io.averkhoglyad.popug.common.transaction.transaction
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -40,7 +40,6 @@ class UserService(
                 ?.let { passwordEncoder.encode(it) }
                 ?: repository.loadPasswordHash(entityId)
         } else {
-            entity.publicId = UUID.randomUUID()
             entity.passwordHash = passwordEncoder.encode(entity.password)
         }
 
