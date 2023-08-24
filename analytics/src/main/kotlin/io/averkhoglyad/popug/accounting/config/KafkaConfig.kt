@@ -120,6 +120,7 @@ class KafkaProducerConfig(
     @Bean
     fun defaultKafkaProducerFactoryCustomizer(): DefaultKafkaProducerFactoryCustomizer {
         return DefaultKafkaProducerFactoryCustomizer {
+            @Suppress("UNCHECKED_CAST")
             val producerFactory = it as DefaultKafkaProducerFactory<Any?, Any?>
             producerFactory.setValueSerializerSupplier { SchemaValidationSerializer(JsonSerializer<Any?>(), jsonSchemaValidator) }
             return@DefaultKafkaProducerFactoryCustomizer
