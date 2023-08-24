@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.type.TypeFactory
 import io.averkhoglyad.popug.accounting.event.business.task.*
 import io.averkhoglyad.popug.accounting.event.business.task.TaskLifecycleEvent.*
-import io.averkhoglyad.popug.accounting.event.streaming.task.v1.TaskDto
+import io.averkhoglyad.popug.accounting.event.streaming.task.TaskDto
 import io.averkhoglyad.popug.accounting.event.streaming.user.UserDto
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.kafka.headerAsString
