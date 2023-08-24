@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
     <property name="changesVersion" value="v1:20230813_1645" global="false"/>
 
@@ -12,7 +11,7 @@
                 <constraints primaryKey="true" primaryKeyName="PK_task" nullable="false"/>
             </column>
             <column name="public_id" type="${uuidType}">
-                <constraints nullable="false" unique="true" uniqueConstraintName="UC_task_public_id"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="UC_task__public_id"/>
             </column>
             <column name="title" type="${stringType}">
                 <constraints nullable="false"/>
@@ -23,10 +22,10 @@
             <column name="status" type="VARCHAR(16)">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_cost" type="${intType}">
+            <column name="cost" type="${intType}">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_revenue" type="${intType}">
+            <column name="revenue" type="${intType}">
                 <constraints nullable="false"/>
             </column>
             <column name="assignee_id" type="${uuidType}">
@@ -39,7 +38,7 @@
         <addForeignKeyConstraint constraintName="FK_task__user"
                                  baseTableName="task" baseColumnNames="assignee_id"
                                  referencedTableName="user" referencedColumnNames="id"/>
-        <createIndex tableName="task" indexName="I_task_public_id">
+        <createIndex tableName="task" indexName="I_task__public_id">
             <column name="public_id"/>
         </createIndex>
     </changeSet>

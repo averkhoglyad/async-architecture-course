@@ -50,7 +50,7 @@ Authorization: Basic dGVzdC1jbGllbnQ6dGVzdC1jbGllbnQ=
 %}
 
 ### Can't get Tasks if unauthorized
-GET http://localhost:3000/tasks?page=1&size=5
+GET http://localhost:5000/tasks?page=1&size=5
 
 > {%
     client.test("Failed", () => {
@@ -59,7 +59,7 @@ GET http://localhost:3000/tasks?page=1&size=5
 %}
 
 ### Get Tasks
-GET http://localhost:3000/tasks?page=1&size=5
+GET http://localhost:5000/tasks?page=1&size=5
 Authorization: Bearer {{ accessToken }}
 
 > {%
@@ -69,7 +69,7 @@ Authorization: Bearer {{ accessToken }}
 %}
 
 ### Create Task
-POST http://localhost:3000/tasks
+POST http://localhost:5000/tasks
 Authorization: Bearer {{ accessToken }}
 Content-Type: application/json
 
@@ -86,8 +86,8 @@ Content-Type: application/json
         client.assert(response.body['status'] == 'OPEN', "Task must be open");
     });
     client.test("Accounting fields are correct", () => {
-        client.assert(response.body['userCost'] >= 10 && response.body['userCost'] <= 20, "Task's user cost must be between 10 and 20");
-        client.assert(response.body['userRevenue'] >= 20 && response.body['userRevenue'] <= 40, "Task's user revenue must be between 20 and 40");
+        client.assert(response.body['cost'] >= 10 && response.body['cost'] <= 20, "Task's user cost must be between 10 and 20");
+        client.assert(response.body['revenue'] >= 20 && response.body['revenue'] <= 40, "Task's user revenue must be between 20 and 40");
     });
     client.test("Assignee is correct", () => {
         client.assert(!!response.body['assignee'], "Task must be assigned to a User");
@@ -102,7 +102,7 @@ Content-Type: application/json
 %}
 
 ### Get Task
-GET http://localhost:3000/tasks/{{ taskId }}
+GET http://localhost:5000/tasks/{{ taskId }}
 Authorization: Bearer {{ accessToken }}
 
 > {%
@@ -115,7 +115,7 @@ Authorization: Bearer {{ accessToken }}
 %}
 
 ### Close Task
-PUT http://localhost:3000/tasks/{{ taskId }}?close
+PUT http://localhost:5000/tasks/{{ taskId }}?close
 Authorization: Bearer {{ accessToken }}
 
 > {%
@@ -129,7 +129,7 @@ Authorization: Bearer {{ accessToken }}
 %}
 
 ### Get closed Task
-GET http://localhost:3000/tasks/{{ taskId }}
+GET http://localhost:5000/tasks/{{ taskId }}
 Authorization: Bearer {{ accessToken }}
 
 > {%
@@ -194,7 +194,7 @@ Authorization: Basic dGVzdC1jbGllbnQ6dGVzdC1jbGllbnQ=
 %}
 
 ### Can't close not own Task
-PUT http://localhost:3000/tasks/{{ taskId }}?close
+PUT http://localhost:5000/tasks/{{ taskId }}?close
 Authorization: Bearer {{ accessToken }}
 
 > {%

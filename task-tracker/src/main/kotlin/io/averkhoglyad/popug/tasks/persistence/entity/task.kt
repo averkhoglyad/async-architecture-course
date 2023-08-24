@@ -3,6 +3,7 @@ package io.averkhoglyad.popug.tasks.persistence.entity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
+import jakarta.persistence.EnumType.STRING
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Positive
@@ -15,12 +16,13 @@ class Task {
     @Column(updatable = false, insertable = false)
     var id: UUID? = null
     @Column(updatable = false)
-    lateinit var publicId: UUID
+    var publicId: UUID = UUID.randomUUID()
 
     @NotBlank
     var title: String = ""
     var description: String = ""
 
+    @Enumerated(STRING)
     @get:JsonProperty
     @set:JsonIgnore
     var status: TaskStatus = TaskStatus.OPEN
@@ -28,12 +30,12 @@ class Task {
     @Positive
     @get:JsonProperty
     @set:JsonIgnore
-    var userCost: Int = 0
+    var cost: Int = 0
 
     @Positive
     @get:JsonProperty
     @set:JsonIgnore
-    var userRevenue: Int = 0
+    var revenue: Int = 0
 
     @NotNull
     @ManyToOne(optional = false)
