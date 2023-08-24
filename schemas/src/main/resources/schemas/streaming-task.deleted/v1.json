@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "publicId": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "publicId",
+    "title"
+  ],
+  "additionalProperties": false
+}
