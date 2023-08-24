@@ -14,6 +14,8 @@ class Task {
     @Column(updatable = false)
     lateinit var publicId: UUID
 
+    var jiraId: String = ""
+
     var title: String = ""
 
     var description: String = ""

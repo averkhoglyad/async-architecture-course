@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "publicId": {
+      "type": "string"
+    },
+    "jiraId": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "publicId",
+    "jiraId",
+    "title"
+  ],
+  "additionalProperties": false
+}

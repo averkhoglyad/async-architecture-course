@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.accounting.service
 
-import io.averkhoglyad.popug.accounting.event.TaskDto
+import io.averkhoglyad.popug.accounting.event.streaming.task.TaskDto
 import io.averkhoglyad.popug.accounting.persistence.entity.Task
 import io.averkhoglyad.popug.accounting.persistence.repository.TaskRepository
 import org.springframework.stereotype.Service
@@ -38,6 +38,18 @@ fun TaskDto.toEntity(): Task = toEntity(Task())
 fun TaskDto.toEntity(entity: Task): Task = entity
     .also {
         it.publicId = this.publicId
-        it.title = this.title
+        if (this.jiraId == null) {
+            val segments = title.split(" - ".toRegex(), 2)
+            if (segments.size == 1) {
+                it.jiraId = ""
+                it.title = this.title
+            } else {
+                it.jiraId = segments[0]
+                it.title = segments[1]
+            }
+        } else {
+            it.jiraId = this.jiraId
+            it.title = this.title
+        }
         it.description = this.description
     }

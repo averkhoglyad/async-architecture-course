@@ -1,4 +1,4 @@
-package io.averkhoglyad.popug.accounting.event
+package io.averkhoglyad.popug.accounting.event.business.task
 
 import java.util.UUID
 

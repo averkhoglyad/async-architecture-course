@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <property name="changesVersion" value="v1:20230823_1645" global="false"/>
+
+    <changeSet author="averkhoglyad" id="${changesVersion}-Add_jiraId_column_to_Task_table">
+        <addColumn tableName="task">
+            <column name="jira_id" type="${stringType}" defaultValue="">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!--
+    <changeSet author="averkhoglyad" id="${changesVersion}-Create_Task_table">
+        <sql>
+            Put sql to extract jira id from old task title
+        </sql>
+    </changeSet>
+    -->
+</databaseChangeLog>
