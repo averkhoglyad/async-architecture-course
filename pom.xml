@@ -12,7 +12,8 @@
     <modules>
         <module>auth</module>
         <module>task-tracker</module>
-<!--        <module>common</module>-->
+        <module>common</module>
+<!--        <module>schemas</module>-->
 <!--        <module>config-server</module>-->
 <!--        <module>discovery-server</module>-->
 <!--        <module>gateway-server</module>-->
