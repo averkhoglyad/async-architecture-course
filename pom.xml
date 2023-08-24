@@ -11,6 +11,7 @@
 
     <modules>
         <module>accounting</module>
+        <module>analytics</module>
         <module>auth</module>
         <module>task-tracker</module>
         <module>common</module>
