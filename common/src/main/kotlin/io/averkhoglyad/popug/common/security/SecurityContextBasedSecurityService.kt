@@ -1,10 +1,9 @@
-package io.averkhoglyad.popug.tasks.security
+package io.averkhoglyad.popug.common.security
 
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Service
 
-@Service
 class SecurityContextBasedSecurityService : SecurityService {
 
     override fun currentJwtToken(): Jwt? {
