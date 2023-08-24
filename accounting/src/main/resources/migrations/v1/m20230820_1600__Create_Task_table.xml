@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <property name="changesVersion" value="v1:20230820_1600" global="false"/>
+
+    <changeSet author="averkhoglyad" id="${changesVersion}-Create_Task_table">
+        <createTable tableName="task">
+            <column name="id" type="${uuidType}">
+                <constraints primaryKey="true" primaryKeyName="PK_task" nullable="false"/>
+            </column>
+            <column name="public_id" type="${uuidType}">
+                <constraints nullable="false" unique="true" uniqueConstraintName="UC_task_public_id"/>
+            </column>
+            <column name="title" type="${stringType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="${textType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="${boolType}"/>
+        </createTable>
+        <createIndex tableName="task" indexName="I_task__public_id">
+            <column name="public_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

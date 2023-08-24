@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>accounting</module>
         <module>auth</module>
         <module>task-tracker</module>
         <module>common</module>
