@@ -1,4 +1,4 @@
-package io.averkhoglyad.popug.tasks.security
+package io.averkhoglyad.popug.common.security
 
 import org.springframework.security.oauth2.jwt.Jwt
 import java.util.UUID

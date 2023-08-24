@@ -1,12 +1,12 @@
-package io.averkhoglyad.popug.auth.util
+package io.averkhoglyad.popug.common.transaction
 
 import org.springframework.core.Ordered
 import org.springframework.transaction.support.TransactionSynchronization
 import org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive
 import org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization
 
-typealias Runnable = () -> Unit
-typealias Consumer<T> = (T) -> Unit
+private typealias Runnable = () -> Unit
+private typealias Consumer<T> = (T) -> Unit
 
 fun transaction(prepare: Synchronization.() -> Unit) {
     if (!isActualTransactionActive()) {
@@ -163,4 +163,3 @@ private class TransactionSynchronizationImpl(
         }
     }
 }
-

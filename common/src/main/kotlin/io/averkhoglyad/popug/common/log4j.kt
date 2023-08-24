@@ -1,4 +1,4 @@
-package io.averkhoglyad.popug.auth.util
+package io.averkhoglyad.popug.common
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
