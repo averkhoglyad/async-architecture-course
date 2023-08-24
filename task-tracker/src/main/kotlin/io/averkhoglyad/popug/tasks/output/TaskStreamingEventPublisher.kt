@@ -1,11 +1,13 @@
 package io.averkhoglyad.popug.tasks.output
 
+import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
+import io.averkhoglyad.popug.common.log4j
 import io.averkhoglyad.popug.tasks.event.CudEvent
 import io.averkhoglyad.popug.tasks.persistence.entity.Task
-import io.averkhoglyad.popug.tasks.util.log4j
 import org.springframework.cloud.stream.function.StreamBridge
 import org.springframework.messaging.support.GenericMessage
 import org.springframework.stereotype.Component
+import java.time.Instant
 import java.util.UUID
 
 private typealias TaskStreamingEvent = Pair<CudEvent, Task>
@@ -23,7 +25,12 @@ class TaskStreamingEventPublisher(
         val (eventName, task) = event
         val dto = task.toDto()
         logger.debug("Sending streaming message {} for Task#{}: {}", eventName, task.publicId, dto)
-        streamBridge.send(bindingName, GenericMessage(dto, mapOf("X-Event-Name" to eventName.toString())))
+        val headers = mapOf(
+            PopugKafkaHeaders.EVENT_NAME to eventName.toString(),
+            PopugKafkaHeaders.EVENT_VERSION to "v1",
+            PopugKafkaHeaders.PUBLISHED_AT to Instant.now().toString(),
+        )
+        streamBridge.send(bindingName, GenericMessage(dto, headers))
     }
 }
 
@@ -34,17 +41,11 @@ fun EventPublisher<TaskStreamingEvent>.deleted(user: Task) = this.emit(CudEvent.
 data class TaskDto(
     var publicId: UUID,
     var title: String = "",
-    var description: String = "",
-    var userCost: Int = 0,
-    var userRevenue: Int = 0,
-    var status: String = ""
+    var description: String = ""
 )
 
 private fun Task.toDto(): TaskDto = TaskDto(
     publicId = this.publicId,
     title = this.title,
-    description = this.description,
-    userCost = this.userCost,
-    userRevenue = this.userRevenue,
-    status = this.status.name,
+    description = this.description
 )

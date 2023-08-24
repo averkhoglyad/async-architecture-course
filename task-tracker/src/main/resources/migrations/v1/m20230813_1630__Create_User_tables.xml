@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
     <property name="changesVersion" value="v1:20230813_1630" global="false"/>
 
@@ -12,7 +11,7 @@
                 <constraints primaryKey="true" primaryKeyName="PK_user" nullable="false"/>
             </column>
             <column name="public_id" type="${uuidType}">
-                <constraints nullable="false" unique="true" uniqueConstraintName="UC_user_public_id"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="UC_user__public_id"/>
             </column>
             <column name="name" type="${stringType}">
                 <constraints nullable="false"/>
@@ -24,7 +23,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <createIndex tableName="user" indexName="I_user_public_id">
+        <createIndex tableName="user" indexName="I_user__public_id">
             <column name="public_id"/>
         </createIndex>
     </changeSet>
@@ -51,7 +50,8 @@
         <rollback>
             <delete tableName="user">
                 <where>
-                    public_id IN ('ac5780b9-472d-4ca8-b5c4-d56b61a8f5c1', '1e0a2da5-751a-4e8b-b224-529b1bf4e1b1', 'c21e1817-32f3-4602-804f-5345fec50517')
+                    public_id IN ('ac5780b9-472d-4ca8-b5c4-d56b61a8f5c1', '1e0a2da5-751a-4e8b-b224-529b1bf4e1b1',
+                    'c21e1817-32f3-4602-804f-5345fec50517')
                 </where>
             </delete>
         </rollback>

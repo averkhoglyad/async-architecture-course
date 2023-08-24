@@ -1,5 +1,6 @@
 package io.averkhoglyad.popug.tasks.endpoint
 
+import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.tasks.event.CudEvent
 import io.averkhoglyad.popug.tasks.event.CudEvent.*
 import io.averkhoglyad.popug.tasks.event.UserDto
@@ -16,7 +17,7 @@ class UserStreamingHandler(
         val dto = message.payload
         // TODO: Move to bindings or dispatcher analog.
         //       Handle errors on empty or wrong event name
-        val eventName = message.headers["X-Event-Name"]
+        val eventName = message.headers[PopugKafkaHeaders.EVENT_NAME]
             .let { CudEvent.valueOf(it.toString()) }
         when (eventName) {
             CREATED -> service.create(dto)

@@ -1,13 +1,13 @@
 package io.averkhoglyad.popug.tasks.service
 
+import io.averkhoglyad.popug.common.security.SecurityService
+import io.averkhoglyad.popug.common.transaction.transaction
 import io.averkhoglyad.popug.tasks.output.*
 import io.averkhoglyad.popug.tasks.persistence.entity.Task
 import io.averkhoglyad.popug.tasks.persistence.entity.TaskStatus
 import io.averkhoglyad.popug.tasks.persistence.repository.TaskRepository
-import io.averkhoglyad.popug.tasks.security.SecurityService
 import io.averkhoglyad.popug.tasks.service.accounting.CostsRevenueGenerator
 import io.averkhoglyad.popug.tasks.service.assignee.AssigneeGenerator
-import io.averkhoglyad.popug.tasks.util.transaction
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -48,8 +48,8 @@ class TaskService(
     fun create(task: Task): Task {
         task.publicId = UUID.randomUUID()
         task.assignee = assigneeGenerator.assignee()
-        task.userCost = costRevenueGenerator.generateCost(task)
-        task.userRevenue = costRevenueGenerator.generateRevenue(task)
+        task.cost = costRevenueGenerator.generateCost(task)
+        task.revenue = costRevenueGenerator.generateRevenue(task)
 
         transaction {
             afterCommit {
