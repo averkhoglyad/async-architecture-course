@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "operationPublicId": {
+      "type": "string"
+    },
+    "userPublicId": {
+      "type": "string"
+    },
+    "accountPublicId": {
+      "type": "string"
+    },
+    "taskPublicId": {
+      "type": "string"
+    },
+    "occurredAt": {
+      "type": "number"
+    },
+    "amount": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "operationPublicId",
+    "userPublicId",
+    "accountPublicId",
+    "taskPublicId",
+    "occurredAt",
+    "amount"
+  ],
+  "additionalProperties": false
+}

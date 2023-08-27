@@ -16,9 +16,9 @@
         <module>task-tracker</module>
         <module>common</module>
         <module>schemas</module>
-        <!--        <module>config-server</module>-->
-        <!--        <module>discovery-server</module>-->
-        <!--        <module>gateway-server</module>-->
+<!--        <module>config-server</module>-->
+<!--        <module>discovery-server</module>-->
+<!--        <module>gateway-server</module>-->
     </modules>
 
     <properties>

@@ -20,5 +20,6 @@
     <property name="boolType" value="boolean" dbms="postgresql"/>
 
     <includeAll path="v1" relativeToChangelogFile="true"/>
+    <includeAll path="v2" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

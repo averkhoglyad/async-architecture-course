@@ -46,6 +46,6 @@ data class TaskDto(
 
 private fun Task.toDto(): TaskDto = TaskDto(
     publicId = this.publicId,
-    title = this.title,
+    title = "${this.jiraId} - ${this.title}",
     description = this.description
 )

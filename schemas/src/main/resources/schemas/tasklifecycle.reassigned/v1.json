@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "taskPublicId": {
+      "type": "string"
+    },
+    "userPublicId": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "taskPublicId",
+    "userPublicId",
+    "cost"
+  ],
+  "additionalProperties": false
+}

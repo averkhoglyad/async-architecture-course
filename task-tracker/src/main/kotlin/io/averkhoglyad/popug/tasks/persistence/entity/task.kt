@@ -18,6 +18,8 @@ class Task {
     @Column(updatable = false)
     var publicId: UUID = UUID.randomUUID()
 
+    var jiraId: String = ""
+
     @NotBlank
     var title: String = ""
     var description: String = ""
