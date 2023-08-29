@@ -1,4 +1,4 @@
-package io.averkhoglyad.popug.accounting.core.event
+package io.averkhoglyad.popug.accounting.core.event.streaming
 
 import java.util.*
 

@@ -3,7 +3,11 @@ package io.averkhoglyad.popug.accounting.config
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.type.TypeFactory
-import io.averkhoglyad.popug.accounting.core.event.*
+import io.averkhoglyad.popug.accounting.core.event.business.AccountOperationEvents
+import io.averkhoglyad.popug.accounting.core.event.business.TaskOperationDto
+import io.averkhoglyad.popug.accounting.core.event.business.WithdrawOperationDto
+import io.averkhoglyad.popug.accounting.core.event.streaming.TaskDto
+import io.averkhoglyad.popug.accounting.core.event.streaming.UserDto
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.kafka.getLastAsString
 import io.averkhoglyad.popug.schema.JsonSchemaValidator

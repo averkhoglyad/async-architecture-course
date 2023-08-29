@@ -1,4 +1,4 @@
-package io.averkhoglyad.popug.accounting.core.event
+package io.averkhoglyad.popug.accounting.core.event.business
 
 import java.time.Instant
 import java.util.*

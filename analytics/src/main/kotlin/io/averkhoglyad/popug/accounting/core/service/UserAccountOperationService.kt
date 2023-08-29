@@ -1,7 +1,7 @@
 package io.averkhoglyad.popug.accounting.core.service
 
-import io.averkhoglyad.popug.accounting.core.event.TaskOperationDto
-import io.averkhoglyad.popug.accounting.core.event.WithdrawOperationDto
+import io.averkhoglyad.popug.accounting.core.event.business.TaskOperationDto
+import io.averkhoglyad.popug.accounting.core.event.business.WithdrawOperationDto
 import io.averkhoglyad.popug.accounting.core.persistence.entity.Task
 import io.averkhoglyad.popug.accounting.core.persistence.entity.UserAccountTaskOperation
 import io.averkhoglyad.popug.accounting.core.persistence.entity.UserAccountWithdrawOperation

@@ -1,6 +1,7 @@
 package io.averkhoglyad.popug.auth.output
 
 import io.averkhoglyad.popug.auth.core.entity.UserEntity
+import io.averkhoglyad.popug.auth.core.event.CudEvent
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.log4j
 import org.springframework.cloud.stream.function.StreamBridge

@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.accounting.core.service
 
-import io.averkhoglyad.popug.accounting.core.event.TaskDto
+import io.averkhoglyad.popug.accounting.core.event.streaming.TaskDto
 import io.averkhoglyad.popug.accounting.core.persistence.entity.Task
 import io.averkhoglyad.popug.accounting.core.persistence.repository.TaskRepository
 import org.springframework.stereotype.Service

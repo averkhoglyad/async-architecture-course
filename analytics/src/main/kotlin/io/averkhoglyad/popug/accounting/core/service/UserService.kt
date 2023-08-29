@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.accounting.core.service
 
-import io.averkhoglyad.popug.accounting.core.event.UserDto
+import io.averkhoglyad.popug.accounting.core.event.streaming.UserDto
 import io.averkhoglyad.popug.accounting.core.persistence.entity.UserEntity
 import io.averkhoglyad.popug.accounting.core.persistence.entity.UserRole
 import io.averkhoglyad.popug.accounting.core.persistence.repository.UserRepository
