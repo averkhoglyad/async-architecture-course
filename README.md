@@ -1,2 +1,2 @@
 # async-architecture-course
-Домашка к курсу «Асинхронная архитектура» пятый поток
+Домашка к курсу [«Асинхронная архитектура»](https://education.borshev.com/architecture) пятый поток
