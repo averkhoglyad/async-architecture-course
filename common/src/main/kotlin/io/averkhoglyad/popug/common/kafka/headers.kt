@@ -8,7 +8,7 @@ object PopugKafkaHeaders {
     const val PUBLISHED_AT = "X-Published-At"
 }
 
-fun Headers.headerAsString(name: String): String {
+fun Headers.getLastAsString(name: String): String {
     return lastHeader(name)?.value()?.toString(Charsets.UTF_8) ?: ""
 }
 
