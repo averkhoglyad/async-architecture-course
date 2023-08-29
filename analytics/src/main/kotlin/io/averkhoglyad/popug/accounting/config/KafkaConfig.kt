@@ -3,7 +3,7 @@ package io.averkhoglyad.popug.accounting.config
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.type.TypeFactory
-import io.averkhoglyad.popug.accounting.event.*
+import io.averkhoglyad.popug.accounting.core.event.*
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.kafka.headerAsString
 import io.averkhoglyad.popug.schema.JsonSchemaValidator
@@ -19,18 +19,19 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.config.ContainerCustomizer
-import org.springframework.kafka.core.*
+import org.springframework.kafka.core.ConsumerFactory
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.kafka.support.serializer.JsonDeserializer
 import org.springframework.kafka.support.serializer.JsonSerializer
-import org.springframework.lang.NonNull
 
 const val KAFKA_LISTENER_STREAMING_TASK = "KAFKA_LISTENER_STREAMING_TASK"
 const val KAFKA_LISTENER_STREAMING_USER = "KAFKA_LISTENER_STREAMING_USER"
 const val KAFKA_LISTENER_USER_ACCOUNT_OPERATIONS = "KAFKA_LISTENER_USER_ACCOUNT_OPERATIONS"
 
 @Configuration
-class KafkaConfig(
+class KafkaConsumerConfig(
     private val configurer: ConcurrentKafkaListenerContainerFactoryConfigurer,
     private val kafkaContainerCustomizer: ObjectProvider<ContainerCustomizer<Any?, Any?, ConcurrentMessageListenerContainer<Any?, Any?>?>>,
     private val kafkaProperties: KafkaProperties,
@@ -40,7 +41,6 @@ class KafkaConfig(
     private val jsonSchemaValidator: SchemaValidator = JsonSchemaValidator(objectMapper)
 
     @Bean(KAFKA_LISTENER_USER_ACCOUNT_OPERATIONS)
-    @NonNull
     fun taskLifecycleKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
         val consumerFactory = operationConsumerFactory()
         return kafkaListenerContainerFactory(consumerFactory)
@@ -66,14 +66,12 @@ class KafkaConfig(
     }
 
     @Bean(KAFKA_LISTENER_STREAMING_TASK)
-    @NonNull
     fun taskStreamingKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, TaskDto> {
         val consumerFactory = defaultConsumerFactory<String, TaskDto>()
         return kafkaListenerContainerFactory(consumerFactory)
     }
 
     @Bean(KAFKA_LISTENER_STREAMING_USER)
-    @NonNull
     fun userStreamingKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, UserDto> {
         val consumerFactory = defaultConsumerFactory<String, UserDto>()
         return kafkaListenerContainerFactory(consumerFactory)
@@ -106,7 +104,9 @@ class KafkaConfig(
     }
 
     private inline fun <reified T> jsonDeserializer(): JsonDeserializer<T> {
-        return JsonDeserializer(T::class.java)
+        val jsonDeserializer = JsonDeserializer(T::class.java)
+        jsonDeserializer.configure(mapOf(JsonDeserializer.USE_TYPE_INFO_HEADERS to false), false)
+        return jsonDeserializer
     }
 }
 

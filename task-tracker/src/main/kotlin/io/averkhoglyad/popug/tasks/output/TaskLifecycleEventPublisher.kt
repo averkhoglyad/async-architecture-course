@@ -1,24 +1,25 @@
 package io.averkhoglyad.popug.tasks.output
 
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
+import io.averkhoglyad.popug.common.kafka.addAsString
 import io.averkhoglyad.popug.common.log4j
-import io.averkhoglyad.popug.tasks.persistence.entity.Task
-import org.springframework.cloud.stream.function.StreamBridge
-import org.springframework.messaging.support.GenericMessage
+import io.averkhoglyad.popug.tasks.core.persistence.entity.Task
+import org.apache.kafka.clients.producer.ProducerRecord
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 typealias TaskLifecycleEvent = Pair<TaskLifecycle, Task>
 
 @Component
 class TaskLifecycleEventPublisher(
-    private val streamBridge: StreamBridge
+    private val kafkaTemplate: KafkaTemplate<String, Any>
 ) : EventPublisher<TaskLifecycleEvent> {
 
     private val logger by log4j()
 
-    private val bindingName = "taskLifecycle"
+    private val topic = "TaskLifecycle"
 
     override fun emit(event: TaskLifecycleEvent) {
         val (eventName, task) = event
@@ -26,12 +27,11 @@ class TaskLifecycleEventPublisher(
 
         logger.debug("Sending lifecycle message {} for Task#{}: {}", eventName, task.publicId, dto)
 
-        val headers = mapOf(
-            PopugKafkaHeaders.EVENT_NAME to eventName.toString(),
-            PopugKafkaHeaders.EVENT_VERSION to "v1",
-            PopugKafkaHeaders.PUBLISHED_AT to Instant.now().toString(),
-        )
-        streamBridge.send(bindingName, GenericMessage(dto, headers))
+        val record = ProducerRecord<String, Any>(topic, dto)
+        record.headers().addAsString(PopugKafkaHeaders.EVENT_NAME, eventName)
+        record.headers().addAsString(PopugKafkaHeaders.EVENT_VERSION, "v1")
+        record.headers().addAsString(PopugKafkaHeaders.PUBLISHED_AT, Instant.now())
+        kafkaTemplate.send(record)
     }
 }
 

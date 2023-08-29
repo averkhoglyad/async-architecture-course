@@ -3,10 +3,10 @@ package io.averkhoglyad.popug.accounting.config
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.type.TypeFactory
-import io.averkhoglyad.popug.accounting.event.business.task.*
-import io.averkhoglyad.popug.accounting.event.business.task.TaskLifecycleEvent.*
-import io.averkhoglyad.popug.accounting.event.streaming.task.TaskDto
-import io.averkhoglyad.popug.accounting.event.streaming.user.UserDto
+import io.averkhoglyad.popug.accounting.core.event.business.task.*
+import io.averkhoglyad.popug.accounting.core.event.business.task.TaskLifecycleEvent.*
+import io.averkhoglyad.popug.accounting.core.event.streaming.task.TaskDto
+import io.averkhoglyad.popug.accounting.core.event.streaming.user.UserDto
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.kafka.headerAsString
 import io.averkhoglyad.popug.schema.JsonSchemaValidator
@@ -22,18 +22,19 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.config.ContainerCustomizer
-import org.springframework.kafka.core.*
+import org.springframework.kafka.core.ConsumerFactory
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.kafka.support.serializer.JsonDeserializer
 import org.springframework.kafka.support.serializer.JsonSerializer
-import org.springframework.lang.NonNull
 
 const val KAFKA_LISTENER_STREAMING_TASK = "KAFKA_LISTENER_STREAMING_TASK"
 const val KAFKA_LISTENER_STREAMING_USER = "KAFKA_LISTENER_STREAMING_USER"
 const val KAFKA_LISTENER_TASK_LIFECYCLE = "KAFKA_LISTENER_TASK_LIFECYCLE"
 
 @Configuration
-class KafkaConfig(
+class KafkaConsumerConfig(
     private val configurer: ConcurrentKafkaListenerContainerFactoryConfigurer,
     private val kafkaContainerCustomizer: ObjectProvider<ContainerCustomizer<Any?, Any?, ConcurrentMessageListenerContainer<Any?, Any?>?>>,
     private val kafkaProperties: KafkaProperties,
@@ -43,21 +44,18 @@ class KafkaConfig(
     private val jsonSchemaValidator: SchemaValidator = JsonSchemaValidator(objectMapper)
 
     @Bean(KAFKA_LISTENER_TASK_LIFECYCLE)
-    @NonNull
     fun taskLifecycleKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, TaskLifecycleDto> {
         val consumerFactory = taskLifecycleConsumerFactory()
         return kafkaListenerContainerFactory(consumerFactory)
     }
 
     @Bean(KAFKA_LISTENER_STREAMING_TASK)
-    @NonNull
     fun taskStreamingKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, TaskDto> {
         val consumerFactory = taskStreamingConsumerFactory<String, TaskDto>()
         return kafkaListenerContainerFactory(consumerFactory)
     }
 
     @Bean(KAFKA_LISTENER_STREAMING_USER)
-    @NonNull
     fun userStreamingKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, UserDto> {
         val consumerFactory = taskStreamingConsumerFactory<String, UserDto>()
         return kafkaListenerContainerFactory(consumerFactory)
@@ -99,7 +97,9 @@ class KafkaConfig(
     }
 
     private inline fun <reified T> jsonDeserializer(): JsonDeserializer<T> {
-        return JsonDeserializer(T::class.java)
+        val jsonDeserializer = JsonDeserializer(T::class.java)
+        jsonDeserializer.configure(mapOf(JsonDeserializer.USE_TYPE_INFO_HEADERS to false), false)
+        return jsonDeserializer
     }
 
     private fun detectLifecycleType(topic: String, data: ByteArray?, headers: Headers): JavaType? {
@@ -123,9 +123,9 @@ class KafkaProducerConfig(
     @Bean
     fun defaultKafkaProducerFactoryCustomizer(): DefaultKafkaProducerFactoryCustomizer {
         return DefaultKafkaProducerFactoryCustomizer {
+            @Suppress("UNCHECKED_CAST")
             val producerFactory = it as DefaultKafkaProducerFactory<Any?, Any?>
             producerFactory.setValueSerializerSupplier { SchemaValidationSerializer(JsonSerializer<Any?>(), jsonSchemaValidator) }
-            return@DefaultKafkaProducerFactoryCustomizer
         }
     }
 }

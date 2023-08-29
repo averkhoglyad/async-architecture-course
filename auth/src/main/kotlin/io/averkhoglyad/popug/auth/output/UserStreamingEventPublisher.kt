@@ -1,13 +1,13 @@
 package io.averkhoglyad.popug.auth.output
 
-import io.averkhoglyad.popug.auth.entity.UserEntity
+import io.averkhoglyad.popug.auth.core.entity.UserEntity
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.log4j
 import org.springframework.cloud.stream.function.StreamBridge
 import org.springframework.messaging.support.GenericMessage
 import org.springframework.stereotype.Component
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 typealias UserEvent = Pair<CudEvent, UserEntity>
 

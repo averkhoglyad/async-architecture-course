@@ -1,10 +1,10 @@
 package io.averkhoglyad.popug.accounting.endpoint
 
 import io.averkhoglyad.popug.accounting.config.KAFKA_LISTENER_TASK_LIFECYCLE
-import io.averkhoglyad.popug.accounting.event.business.task.TaskClosed
-import io.averkhoglyad.popug.accounting.event.business.task.TaskCreated
-import io.averkhoglyad.popug.accounting.event.business.task.TaskReassigned
-import io.averkhoglyad.popug.accounting.service.UserAccountService
+import io.averkhoglyad.popug.accounting.core.event.business.task.TaskClosed
+import io.averkhoglyad.popug.accounting.core.event.business.task.TaskCreated
+import io.averkhoglyad.popug.accounting.core.event.business.task.TaskReassigned
+import io.averkhoglyad.popug.accounting.core.service.UserAccountService
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.log4j
 import org.springframework.kafka.annotation.KafkaHandler

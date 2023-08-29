@@ -1,7 +1,7 @@
 package io.averkhoglyad.popug.accounting.endpoint
 
-import io.averkhoglyad.popug.accounting.persistence.repository.UserAccountRepository
-import io.averkhoglyad.popug.accounting.service.UserAccountService
+import io.averkhoglyad.popug.accounting.core.persistence.repository.UserAccountRepository
+import io.averkhoglyad.popug.accounting.core.service.UserAccountService
 import org.springframework.stereotype.Component
 
 @Component

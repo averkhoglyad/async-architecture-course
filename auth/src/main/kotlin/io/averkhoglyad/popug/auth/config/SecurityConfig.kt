@@ -3,8 +3,7 @@ package io.averkhoglyad.popug.auth.config
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
-import io.averkhoglyad.popug.auth.entity.UserEntity
-import io.averkhoglyad.popug.auth.util.generateRsa
+import io.averkhoglyad.popug.auth.core.util.generateRsa
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
@@ -25,7 +24,6 @@ import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher
-import java.util.stream.Collectors
 
 @Configuration(proxyBeanMethods = false)
 class SecurityConfig {

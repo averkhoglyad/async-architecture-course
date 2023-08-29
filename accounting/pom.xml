@@ -101,8 +101,6 @@
             <artifactId>liquibase-core</artifactId>
         </dependency>
 
-        <!-- Spring-Cloud -->
-
         <!-- Kafka -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>

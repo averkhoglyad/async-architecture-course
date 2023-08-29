@@ -1,10 +1,10 @@
 package io.averkhoglyad.popug.accounting.endpoint
 
 import io.averkhoglyad.popug.accounting.config.KAFKA_LISTENER_STREAMING_TASK
-import io.averkhoglyad.popug.accounting.event.streaming.CudEvent
-import io.averkhoglyad.popug.accounting.event.streaming.CudEvent.*
-import io.averkhoglyad.popug.accounting.event.streaming.task.TaskDto
-import io.averkhoglyad.popug.accounting.service.TaskService
+import io.averkhoglyad.popug.accounting.core.event.streaming.CudEvent
+import io.averkhoglyad.popug.accounting.core.event.streaming.CudEvent.*
+import io.averkhoglyad.popug.accounting.core.event.streaming.task.TaskDto
+import io.averkhoglyad.popug.accounting.core.service.TaskService
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.log4j
 import org.springframework.kafka.annotation.KafkaListener

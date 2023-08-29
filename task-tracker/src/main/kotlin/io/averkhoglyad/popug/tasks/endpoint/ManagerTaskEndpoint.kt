@@ -1,6 +1,6 @@
 package io.averkhoglyad.popug.tasks.endpoint
 
-import io.averkhoglyad.popug.tasks.service.TaskService
+import io.averkhoglyad.popug.tasks.core.service.TaskService
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping

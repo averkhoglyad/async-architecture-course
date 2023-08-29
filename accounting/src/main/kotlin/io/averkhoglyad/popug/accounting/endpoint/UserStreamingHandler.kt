@@ -1,10 +1,10 @@
 package io.averkhoglyad.popug.accounting.endpoint
 
 import io.averkhoglyad.popug.accounting.config.KAFKA_LISTENER_STREAMING_USER
-import io.averkhoglyad.popug.accounting.event.streaming.CudEvent
-import io.averkhoglyad.popug.accounting.event.streaming.CudEvent.*
-import io.averkhoglyad.popug.accounting.event.streaming.user.UserDto
-import io.averkhoglyad.popug.accounting.service.UserService
+import io.averkhoglyad.popug.accounting.core.event.streaming.CudEvent
+import io.averkhoglyad.popug.accounting.core.event.streaming.CudEvent.*
+import io.averkhoglyad.popug.accounting.core.event.streaming.user.UserDto
+import io.averkhoglyad.popug.accounting.core.service.UserService
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.log4j
 import org.springframework.kafka.annotation.KafkaListener

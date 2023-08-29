@@ -1,7 +1,7 @@
 package io.averkhoglyad.popug.tasks.endpoint
 
-import io.averkhoglyad.popug.tasks.persistence.entity.Task
-import io.averkhoglyad.popug.tasks.service.TaskService
+import io.averkhoglyad.popug.tasks.core.persistence.entity.Task
+import io.averkhoglyad.popug.tasks.core.service.TaskService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus

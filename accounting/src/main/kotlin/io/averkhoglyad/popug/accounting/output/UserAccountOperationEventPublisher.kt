@@ -1,8 +1,8 @@
 package io.averkhoglyad.popug.accounting.output
 
-import io.averkhoglyad.popug.accounting.persistence.entity.UserAccountOperation
-import io.averkhoglyad.popug.accounting.persistence.entity.UserAccountTaskOperation
-import io.averkhoglyad.popug.accounting.persistence.entity.UserAccountWithdrawOperation
+import io.averkhoglyad.popug.accounting.core.persistence.entity.UserAccountOperation
+import io.averkhoglyad.popug.accounting.core.persistence.entity.UserAccountTaskOperation
+import io.averkhoglyad.popug.accounting.core.persistence.entity.UserAccountWithdrawOperation
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
 import io.averkhoglyad.popug.common.kafka.addAsString
 import io.averkhoglyad.popug.common.log4j

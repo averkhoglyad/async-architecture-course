@@ -1,36 +1,37 @@
 package io.averkhoglyad.popug.tasks.output
 
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
+import io.averkhoglyad.popug.common.kafka.addAsString
 import io.averkhoglyad.popug.common.log4j
-import io.averkhoglyad.popug.tasks.event.CudEvent
-import io.averkhoglyad.popug.tasks.persistence.entity.Task
-import org.springframework.cloud.stream.function.StreamBridge
-import org.springframework.messaging.support.GenericMessage
+import io.averkhoglyad.popug.tasks.core.event.CudEvent
+import io.averkhoglyad.popug.tasks.core.persistence.entity.Task
+import org.apache.kafka.clients.producer.ProducerRecord
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 private typealias TaskStreamingEvent = Pair<CudEvent, Task>
 
 @Component
 class TaskStreamingEventPublisher(
-    private val streamBridge: StreamBridge
+    private val kafkaTemplate: KafkaTemplate<String, Any>
 ) : EventPublisher<TaskStreamingEvent> {
 
     private val logger by log4j()
 
-    private val bindingName = "Streaming-Task"
+    private val topic = "Streaming-Task"
 
     override fun emit(event: TaskStreamingEvent) {
         val (eventName, task) = event
         val dto = task.toDto()
         logger.debug("Sending streaming message {} for Task#{}: {}", eventName, task.publicId, dto)
-        val headers = mapOf(
-            PopugKafkaHeaders.EVENT_NAME to eventName.toString(),
-            PopugKafkaHeaders.EVENT_VERSION to "v1",
-            PopugKafkaHeaders.PUBLISHED_AT to Instant.now().toString(),
-        )
-        streamBridge.send(bindingName, GenericMessage(dto, headers))
+
+        val record = ProducerRecord<String, Any>(topic, dto.publicId.toString(), dto)
+        record.headers().addAsString(PopugKafkaHeaders.EVENT_NAME, eventName)
+        record.headers().addAsString(PopugKafkaHeaders.EVENT_VERSION, "v1")
+        record.headers().addAsString(PopugKafkaHeaders.PUBLISHED_AT, Instant.now())
+        kafkaTemplate.send(record)
     }
 }
 
