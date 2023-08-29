@@ -51,13 +51,13 @@ class KafkaConsumerConfig(
 
     @Bean(KAFKA_LISTENER_STREAMING_TASK)
     fun taskStreamingKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, TaskDto> {
-        val consumerFactory = taskStreamingConsumerFactory<String, TaskDto>()
+        val consumerFactory = streamingConsumerFactory<String, TaskDto>()
         return kafkaListenerContainerFactory(consumerFactory)
     }
 
     @Bean(KAFKA_LISTENER_STREAMING_USER)
     fun userStreamingKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, UserDto> {
-        val consumerFactory = taskStreamingConsumerFactory<String, UserDto>()
+        val consumerFactory = streamingConsumerFactory<String, UserDto>()
         return kafkaListenerContainerFactory(consumerFactory)
     }
 
@@ -83,7 +83,7 @@ class KafkaConsumerConfig(
         return consumerFactory
     }
 
-    private inline fun <K, reified V> taskStreamingConsumerFactory(): ConsumerFactory<K, V> {
+    private inline fun <K, reified V> streamingConsumerFactory(): ConsumerFactory<K, V> {
         val consumerFactory = consumerFactory<K, V> {
             setValueDeserializerSupplier { SchemaValidationDeserializer<V>(jsonDeserializer(), jsonSchemaValidator) }
         }

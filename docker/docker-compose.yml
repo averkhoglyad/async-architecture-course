@@ -3,8 +3,6 @@ name: popug-async-architecture-local
 services:
   zookeeper:
     image: wurstmeister/zookeeper:latest
-    ports:
-      - '12181:2181'
     networks:
       backend:
         aliases:
