@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.type.TypeFactory
 import io.averkhoglyad.popug.accounting.core.event.*
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
-import io.averkhoglyad.popug.common.kafka.headerAsString
+import io.averkhoglyad.popug.common.kafka.getLastAsString
 import io.averkhoglyad.popug.schema.JsonSchemaValidator
 import io.averkhoglyad.popug.schema.SchemaValidator
 import io.averkhoglyad.popug.schema.kafka.SchemaValidationDeserializer
@@ -57,7 +57,7 @@ class KafkaConsumerConfig(
 
     private fun detectAccountOperationType(topic: String, data: ByteArray?, headers: Headers): JavaType? {
         val typeFactory = TypeFactory.defaultInstance()
-        return when (AccountOperationEvents.parse(headers.headerAsString(PopugKafkaHeaders.EVENT_NAME))) {
+        return when (AccountOperationEvents.parse(headers.getLastAsString(PopugKafkaHeaders.EVENT_NAME))) {
             AccountOperationEvents.COST_PAID -> typeFactory.constructType(TaskOperationDto::class.java)
             AccountOperationEvents.REVENUE_PAID -> typeFactory.constructType(TaskOperationDto::class.java)
             AccountOperationEvents.BALANCE_WITHDRAWN -> typeFactory.constructType(WithdrawOperationDto::class.java)

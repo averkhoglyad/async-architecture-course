@@ -21,14 +21,14 @@ class ExceptionHandler {
 
     @ExceptionHandler
     fun handleException(e: AccessDeniedException): ProblemDetail {
-        logger.warn("Access denied", e)
+        logger.info("Access denied: {}", e.message)
         return ProblemDetail
             .forStatusAndDetail(HttpStatus.FORBIDDEN, "access.denied")
     }
 
     @ExceptionHandler
     fun handleException(e: MissingServletRequestParameterException): ProblemDetail {
-        logger.warn("Param ${e.parameterName} is required", e)
+        logger.info("Param {} is required", e.parameterName)
         return ProblemDetail
             .forStatusAndDetail(HttpStatus.BAD_REQUEST, "param.required")
             .also { it.setProperty("parameter", e.parameterName) }
@@ -36,7 +36,7 @@ class ExceptionHandler {
 
     @ExceptionHandler
     fun handleException(e: HttpMediaTypeNotSupportedException): ProblemDetail {
-        logger.warn("Invalid content type ${e.contentType}", e)
+        logger.info("Invalid content type {}", e.contentType)
         return ProblemDetail
             .forStatusAndDetail(HttpStatus.BAD_REQUEST, "content.type.invalid")
             .also { it.setProperty("contentType", e.contentType) }
@@ -44,7 +44,8 @@ class ExceptionHandler {
 
     @ExceptionHandler
     fun handleException(e: HttpMessageNotReadableException): ProblemDetail {
-        logger.warn("Invalid json", e)
+        logger.info("Invalid body: {}", e.message)
+        logger.debug(e)
         return ProblemDetail
             .forStatusAndDetail(HttpStatus.BAD_REQUEST, "invalid.json.body")
     }
@@ -52,21 +53,23 @@ class ExceptionHandler {
 
     @ExceptionHandler
     fun handleException(e: HttpRequestMethodNotSupportedException): ProblemDetail {
-        logger.warn("HttpStatus.METHOD_NOT_ALLOWED: ", e)
+        logger.info("HttpStatus.METHOD_NOT_ALLOWED: {}", e.message)
         return ProblemDetail
             .forStatusAndDetail(HttpStatus.BAD_REQUEST, "method.not.allowed")
     }
 
     @ExceptionHandler
     fun handleValidationException(e: IllegalArgumentException): ProblemDetail {
-        logger.warn("Illegal argument", e)
+        logger.info("Illegal argument {}", e.message)
+        logger.debug(e)
         return ProblemDetail
             .forStatusAndDetail(HttpStatus.BAD_REQUEST, "illegal.argument")
     }
 
     @ExceptionHandler
     fun handleNotFoundException(e: EntityNotFoundException): ProblemDetail {
-        logger.warn("Entity not found: ", e)
+        logger.info("Entity not found: {}", e.message)
+        logger.debug(e)
         return ProblemDetail
             .forStatusAndDetail(HttpStatus.NOT_FOUND, "entity.not.found")
     }

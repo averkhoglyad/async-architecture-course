@@ -8,7 +8,7 @@ import io.averkhoglyad.popug.accounting.core.event.business.task.TaskLifecycleEv
 import io.averkhoglyad.popug.accounting.core.event.streaming.task.TaskDto
 import io.averkhoglyad.popug.accounting.core.event.streaming.user.UserDto
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
-import io.averkhoglyad.popug.common.kafka.headerAsString
+import io.averkhoglyad.popug.common.kafka.getLastAsString
 import io.averkhoglyad.popug.schema.JsonSchemaValidator
 import io.averkhoglyad.popug.schema.SchemaValidator
 import io.averkhoglyad.popug.schema.kafka.SchemaValidationDeserializer
@@ -104,7 +104,7 @@ class KafkaConsumerConfig(
 
     private fun detectLifecycleType(topic: String, data: ByteArray?, headers: Headers): JavaType? {
         val typeFactory = TypeFactory.defaultInstance()
-        return when (TaskLifecycleEvent.parse(headers.headerAsString(PopugKafkaHeaders.EVENT_NAME))) {
+        return when (TaskLifecycleEvent.parse(headers.getLastAsString(PopugKafkaHeaders.EVENT_NAME))) {
             CREATED -> typeFactory.constructType(TaskCreated::class.java)
             REASSIGNED -> typeFactory.constructType(TaskReassigned::class.java)
             CLOSED -> typeFactory.constructType(TaskClosed::class.java)

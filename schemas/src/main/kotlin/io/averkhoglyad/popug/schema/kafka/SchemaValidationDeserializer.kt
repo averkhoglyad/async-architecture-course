@@ -1,7 +1,7 @@
 package io.averkhoglyad.popug.schema.kafka
 
 import io.averkhoglyad.popug.common.kafka.PopugKafkaHeaders
-import io.averkhoglyad.popug.common.kafka.headerAsString
+import io.averkhoglyad.popug.common.kafka.getLastAsString
 import io.averkhoglyad.popug.schema.SchemaValidator
 import org.apache.kafka.common.header.Headers
 import org.apache.kafka.common.serialization.Deserializer
@@ -20,8 +20,8 @@ class SchemaValidationDeserializer<T>(
     }
 
     override fun deserialize(topic: String, headers: Headers, data: ByteArray): T {
-        val eventNameHeader = headers.headerAsString(PopugKafkaHeaders.EVENT_NAME)
-        val eventVersionHeader = headers.headerAsString(PopugKafkaHeaders.EVENT_VERSION)
+        val eventNameHeader = headers.getLastAsString(PopugKafkaHeaders.EVENT_NAME)
+        val eventVersionHeader = headers.getLastAsString(PopugKafkaHeaders.EVENT_VERSION)
         validator.validate("$topic.$eventNameHeader", eventVersionHeader, data)
         return root.deserialize(topic, headers, data)
     }
